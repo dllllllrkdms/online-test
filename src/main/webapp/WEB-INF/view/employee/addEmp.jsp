@@ -9,7 +9,7 @@
 <body>
 	<!-- empMenu -->
 	<div>
-		<c:import url="/WEB-INF/view/employee/inc/empMenu.jsp"></c:import> <!-- JSTL로 include하기 -->
+		<c:import url="/WEB-INF/view/inc/empMenu.jsp"></c:import> <!-- JSTL로 include하기 -->
 	</div>
 	<h1>사원 - 추가</h1>
 	<div>${errorMsg}</div>

@@ -11,6 +11,7 @@ import goodee.gdj58.online.vo.Employee;
 public interface EmployeeMapper { 
 	// @Select("") @Insert("") 등 쿼리 작성 --> xml페이지에
 	
+	int selectEmployeeCount(String searchWord);
 	int updateEmployeePw(Map<String, Object> paramMap);
 	Employee login(Employee employee);
 	int deleteEmployee(int empNo);

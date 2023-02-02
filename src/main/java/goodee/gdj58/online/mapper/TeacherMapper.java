@@ -9,7 +9,7 @@ import goodee.gdj58.online.vo.Teacher;
 
 @Mapper
 public interface TeacherMapper {
-	
+	int selectTeacherCount(String searchWord);
 	int deleteTeacher(int teacherNo);
 	List<Teacher> selectTeacherList(Map<String, Object> paramMap);
 }

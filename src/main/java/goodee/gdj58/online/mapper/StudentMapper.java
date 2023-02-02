@@ -9,6 +9,7 @@ import goodee.gdj58.online.vo.Student;
 
 @Mapper
 public interface StudentMapper {
+	int selectStudentCount(String searchWord);
 	int deleteStudent(int studentNo);
 	List<Student> selectStudentList(Map<String, Object> paramMap);
 }

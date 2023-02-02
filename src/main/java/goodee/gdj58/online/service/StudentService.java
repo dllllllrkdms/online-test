@@ -16,17 +16,23 @@ import goodee.gdj58.online.vo.Student;
 public class StudentService {
 	@Autowired StudentMapper studentMapper;
 	
+	// 학생 수 
+	public int getStudentCount(String searchWord) {
+		return studentMapper.selectStudentCount(searchWord);
+	}
+	
 	// student 삭제 
 	public int removeStudent(int studentNo) {
 		return studentMapper.deleteStudent(studentNo);
 	}
 	
 	// student list 출력 
-	public List<Student> getStudentList(int currentPage, int rowPerPage) {
+	public List<Student> getStudentList(int currentPage, int rowPerPage, String searchWord) {
 		int beginRow = (currentPage-1)*rowPerPage;
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("beginRow", beginRow);
 		paramMap.put("rowPerPage", rowPerPage);
+		paramMap.put("searchWord", searchWord);
 		return studentMapper.selectStudentList(paramMap);
 	}
 }

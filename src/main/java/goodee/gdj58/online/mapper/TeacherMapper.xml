@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="goodee.gdj58.online.mapper.TeacherMapper">
-	
+	<!-- 강사 수 -->
+	<select id="selectTeacherCount" resultType="Integer" parameterType="java.lang.String">
+		SELECT COUNT(*)
+		FROM teacher
+		<where>
+			<if test="searchWord != null || searchWord != '' ">
+				teacher_name LIKE CONCAT('%',#{searchWord},'%');
+			</if>
+		</where>
+	</select>
 	<!-- 강사 삭제 -->
 	<delete id="deleteTeacher" parameterType="Integer">
 		DELETE FROM teacher
@@ -14,6 +23,12 @@
 			, teacher_id teacherId
 			, teacher_name teacherName
 		FROM teacher
+		<where>
+			<if test="searchWord != null || searchWord != ''">
+				teacher_name LIKE CONCAT('%',#{searchWord},'%')
+			</if>
+		</where>
+		ORDER BY teacher_no DESC
 		LIMIT #{beginRow}, #{rowPerPage};
 	</select>
 </mapper>

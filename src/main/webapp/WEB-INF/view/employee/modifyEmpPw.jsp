@@ -9,7 +9,7 @@
 <body>
 	<!-- empMenu -->
 	<div>
-		<c:import url="/WEB-INF/view/employee/inc/empMenu.jsp"></c:import> <!-- JSTL로 include하기 -->
+		<c:import url="/WEB-INF/view/inc/empMenu.jsp"></c:import> <!-- JSTL로 include하기 -->
 	</div>
 	<h1>사원 - 비밀번호 수정</h1>
 	<form action="${pageContext.request.contextPath}/employee/modifyEmpPw" method="post">

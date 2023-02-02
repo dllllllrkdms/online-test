@@ -16,6 +16,12 @@ import goodee.gdj58.online.vo.Employee;
 public class EmployeeService {
 	@Autowired EmployeeMapper employeeMapper; // 외부에서 객체를 생성해 주입 -> DI
 	
+
+	// 사원 수
+	public int getEmployeeCount(String searchWord) {
+		return employeeMapper.selectEmployeeCount(searchWord);
+	}
+	
 	// emp 비밀번호 수정
 	public int modifyEmployeePw(int empNo, String oldPw, String newPw) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
@@ -41,11 +47,12 @@ public class EmployeeService {
 	}
 	
 	// empList 출력
-	public List<Employee> getEmployeeList(int currentPage, int rowPerPage) {
+	public List<Employee> getEmployeeList(int currentPage, int rowPerPage, String searchWord) {
 		int beginRow = (currentPage-1)*rowPerPage;
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("beginRow", beginRow);
 		paramMap.put("rowPerPage",rowPerPage);
+		paramMap.put("searchWord", searchWord);
 		return employeeMapper.selectEmployeeList(paramMap);
 	}
 }
