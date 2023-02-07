@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import goodee.gdj58.online.service.EmployeeService;
 import goodee.gdj58.online.service.IdService;
@@ -25,19 +26,24 @@ public class EmployeeController {
 	// 로그인 폼
 	@GetMapping("/loginEmp")
 	public String loginEmp(HttpSession session) { 
-		session.invalidate();
+		session.invalidate(); // 강사나 학생으로 로그인한 상태에서 loginEmp를 들어올 때 두 세션을 사용하지 않기 위함.
 		return "employee/login";
 	}
 	// 로그인 action 
 	@PostMapping("/loginEmp")
-	public String loginEmp(HttpSession session, Employee employee) {
+	public String loginEmp(HttpSession session, RedirectAttributes rttr, Employee employee) {
 		Employee resultEmp = employeeService.login(employee);
-		System.out.println(resultEmp+"<-- loginEmp resultEmp, EmployeeController");
-		if(resultEmp==null) { // 로그인 실패
-			return "redirect:/loginEmp";
+		log.debug("\u001B[31m"+resultEmp+"<-- loginEmp resultEmp");
+		
+		String msg = "아이디 또는 비밀번호를 잘못입력했습니다. 다시 시도해주세요.";
+		String redirectUrl = "redirect:/loginEmp";
+		if(resultEmp!=null) { // 로그인 성공
+			msg = "";
+			session.setAttribute("loginEmp", resultEmp);
+			redirectUrl = "redirect:/index";
 		}
-		session.setAttribute("loginEmp", resultEmp);
-		return "redirect:/index";
+		rttr.addFlashAttribute("msg", msg);
+		return redirectUrl;
 	}
 	
 	/*
@@ -56,55 +62,64 @@ public class EmployeeController {
 	}
 	
 	// 비밀번호 수정 폼 
-	@GetMapping("employee/modifyEmpPw")
-	public String modifyEmpPw(HttpSession session) {
-		return "employee/modifyEmpPw";
+	@GetMapping("employee/modifyPw")
+	public String modifyPw() {
+		return "employee/modifyPw";
 	}
 	
 	// 비밀번호 수정 action
-	@PostMapping("employee/modifyEmpPw")
-	public String modifyEmpPw(HttpSession session, @RequestParam(value="oldPw", required=true) String oldPw, @RequestParam(value="newPw", required=true) String newPw) { // required=true : null이 들어오지 못함. 기본값
+	@PostMapping("employee/modifyPw")
+	public String modifyPw(HttpSession session, RedirectAttributes rttr, @RequestParam(value="oldPw", required=true) String oldPw, @RequestParam(value="newPw", required=true) String newPw) { // required=true : null이 들어오지 못함. 기본값
 		Employee loginEmp = (Employee)session.getAttribute("loginEmp");
 		int row = employeeService.modifyEmployeePw(loginEmp.getEmpNo(), oldPw, newPw);
-		System.out.println(row+"<-- modifyEmpPw row, EmployeeController"); 
-		return "redirect:/employee/empList";
+		log.debug("\u001B[31m"+row+"<-- modifyPw row");
+		
+		String msg = "변경실패했습니다. 다시 시도해주세요.";
+		String returnUrl = "redirect:/employee/modifyPw";
+		if(row == 1) { // 변경 성공
+			msg = "변경되었습니다.";
+			returnUrl = "redirect:/index";
+		}
+		rttr.addFlashAttribute("msg", msg);
+		return returnUrl;
 	}
 	
 	// 사원 삭제
 	@GetMapping("/employee/removeEmp")
-	public String removeEmp(HttpSession session, @RequestParam("empNo") int empNo) {
+	public String removeEmp(@RequestParam("empNo") int empNo) {
 		int row = employeeService.removeEmployee(empNo); 
-		System.out.println(row+"<-- deleteEmp row, EmployeeController"); 
+		log.debug("\u001B[31m"+row+"<-- deleteEmp row");
 		return "redirect:/employee/empList";
 	}
 	
 	// 사원 등록 폼
 	@GetMapping("/employee/addEmp")
-	public String addEmp(HttpSession session) {
+	public String addEmp() {
 		return "employee/addEmp"; // forward
 	}
 	
 	// 사원 등록 action
 	@PostMapping("/employee/addEmp")
-	public String addEmp(HttpSession session, Model model, Employee employee) { // 오버로딩
+	public String addEmp(HttpSession session, RedirectAttributes rttr, Employee employee) { // 오버로딩
 		// 아이디 중복 확인
 		String idCheck = idService.getIdCheck(employee.getEmpId());
-		System.out.println(idCheck);
+		log.debug("\u001B[31m"+idCheck+"<-- addEmp idCheck");
+		
 		if(idCheck!=null) {
-			model.addAttribute("errorMsg", "중복된 아이디입니다.");
-			return "employee/addEmp";
+			rttr.addFlashAttribute("msg", "중복된 아이디입니다.");
+			return "redirect:/employee/addEmp";
 		}
 		int row = employeeService.addEmployee(employee); // row == 1 이면 입력성공
-		System.out.println(row+"<-- addEmp row, EmployeeController"); 
+		log.debug("\u001B[31m"+row+"<-- addEmp row");
 		
 		String msg = "등록을 실패했습니다. 다시 시도해주세요.";
+		String returnUrl = "redirect:/employee/addEmp";
 		if(row==1) { // 가입 성공
-			msg = "가입을 환영합니다. 로그인 후 이용해주세요.";
-			model.addAttribute("msg", msg);
-			return "redirect:/employee/empList";
+			msg = "";
+			returnUrl = "redirect:/employee/empList";
 		}
-		model.addAttribute("errorMsg", msg);
-		return "employee/addEmp"; // sendRedirect , CM -> C 
+		rttr.addFlashAttribute("msg", msg);
+		return returnUrl; // sendRedirect , CM -> C 
 	}
 	
 	// 사원리스트 출력
@@ -158,6 +173,7 @@ public class EmployeeController {
 		
 		// model
 		List<Employee> list = employeeService.getEmployeeList(currentPage, rowPerPage, searchWord); 
+		
 		model.addAttribute("list", list); // request.setAttribute("list", list); 와 동일한 결과. ModelAndView 타입으로 반환하는 방법도 있음.
 		model.addAttribute("searchWord", searchWord);
 		model.addAttribute("currentPage", currentPage);

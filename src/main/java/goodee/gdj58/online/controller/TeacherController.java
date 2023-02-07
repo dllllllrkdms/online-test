@@ -1,6 +1,7 @@
 package goodee.gdj58.online.controller;
 
 
+
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -11,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import goodee.gdj58.online.service.IdService;
 import goodee.gdj58.online.service.TeacherService;
@@ -23,70 +25,99 @@ import lombok.extern.slf4j.Slf4j;
 public class TeacherController {
 	@Autowired IdService idService;
 	@Autowired TeacherService teacherService;
+	
 	// 회원가입 
 	@GetMapping("/addTeacher")
 	public String addTeacher(HttpSession session) {
-		
 		return "teacher/addTeacher";
 	}
 	@PostMapping("/addTeacher")
-	public String addTeacher(HttpSession session, Model model, Teacher teacher) {
+	public String addTeacher(HttpSession session, RedirectAttributes rttr, Teacher teacher) {
 		// 아이디 중복확인 
 		String idCheck = idService.getIdCheck(teacher.getTeacherId());
-		log.debug("\u001B[31m"+idCheck+"<-- addTeacher idCheck, TeacherController");
+		log.debug("\u001B[31m"+idCheck+"<-- addTeacher idCheck");
+		
 		if(idCheck!=null) {
-			model.addAttribute("errorMsg", "중복된 아이디입니다.");
-			return "teacher/addTeacher";
+			rttr.addFlashAttribute("msg", "중복된 아이디입니다.");
+			return "redirect:/addTeacher";
 		}
 		int row = teacherService.addTeacher(teacher);
-		log.debug("\u001B[31m"+row+"<-- addTeacher row, addTeacher TeacherController");
+		log.debug("\u001B[31m"+row+"<-- addTeacher row");
 		
-		String msg = "등록을 실패했습니다. 다시 시도해주세요.";
+		String msg = "가입을 실패했습니다. 다시 시도해주세요.";
+		String returnUrl = "redirect:/addTeacher";
 		if(row==1) { // 가입 성공
-			msg = "가입을 환영합니다. 로그인 후 이용해주세요.";			
-			model.addAttribute("msg", msg); 
+			msg = "가입을 환영합니다. 로그인 후 이용해주세요.";
+			returnUrl = "redirect:/loginTeacher";
 			/*
-			 *  model 값 저장 후 redirect를 시도하면 redirect된 페이지에서도 msg 처리를 해줘야한다
+			 *  model 값 저장 후 redirect시 자동으로 parameter에 추가되는 기능이  off되어있다. 
+			 *  -> 활성 화 후 -> redirect된 페이지에서도 msg 처리를 해줘야한다
 			 *  --> redirect없이 jsp페이지를 갈때 사용 
 			 *  RedirectAttributes는 redirect로 리턴하는 코드가 있어야한다. 
 			 *  파라미터 값을 1회성 session을 통해 전달함. -> 한번 redirect된 후에는 소멸
 			 */
-			log.debug("\u001B[31m"+msg+"<-- addTeacher msg, addTeacher TeacherController");
-			return "redirect:/loginTeacher";
 		}
 	
-		model.addAttribute("errorMsg", msg);
-		return "teacher/addTeacher"; 
+		rttr.addFlashAttribute("msg", msg);
+		return returnUrl; 
 	}
 	
 	// 로그인 
 	@GetMapping("/loginTeacher")
-	public String loginTeacher(HttpSession session, Model model, @RequestParam(value="msg", defaultValue="") String msg) {
-		model.addAttribute("msg", msg);
-		log.debug("\u001B[31m"+msg+"<-- addTeacher msg, addTeacher");
+	public String loginTeacher(HttpSession session) {
+		session.invalidate();
 		return "teacher/login";
 	}
 	@PostMapping("/loginTeacher")
-	public String loginTeacher(HttpSession session, Teacher teacher) {
+	public String loginTeacher(HttpSession session, RedirectAttributes rttr, Teacher teacher) {
 		Teacher resultTeacher = teacherService.login(teacher);
 		log.debug("\u001B[31m"+resultTeacher+"<--loginTeacher resultTeacher");
 		
-		if(resultTeacher==null) { // 로그인 실패
-			return "redirect:/loginEmp";
+		String msg = "아이디 또는 비밀번호를 잘못입력했습니다. 다시 시도해주세요.";
+		String redirectUrl = "redirect:/loginTeacher";
+		if(resultTeacher!=null) { // 로그인 성공
+			msg = "";
+			session.setAttribute("loginTeacher", resultTeacher);
+			redirectUrl = "redirect:/index";
 		}
-		session.setAttribute("loginTeacher", resultTeacher);
-		return "redirect:/index";
+		rttr.addFlashAttribute("msg", msg);
+		return redirectUrl;
 	}
 	
-	/*
-	 * 사원기능 
-	 */
-	// 강사 삭제
-	@GetMapping("/employee/teacher/removeTeacher")
-	public String removeTeacher(HttpSession session, int teacherNo) {
+	/* 강사 로그인 후 사용 기능*/
+	
+	// 비밀번호 변경
+	@GetMapping("/teacher/modifyPw")
+	public String modifyPw() {
+		return "teacher/modifyPw";
+	}
+	@PostMapping("/teacher/modifyPw")
+	public String modifyPw(HttpSession session, RedirectAttributes rttr, @RequestParam(value="oldPw", required=true) String oldPw, @RequestParam(value="newPw", required=true) String newPw) {
+		Teacher loginTeacher = (Teacher)session.getAttribute("loginTeacher");
+		int row = teacherService.modifyTeacherPw(loginTeacher.getTeacherNo(), oldPw, newPw);
+		log.debug("\u001B[31m"+row+"<--modifyPw row");
+		
+		String msg = "변경실패했습니다. 다시 시도해주세요.";
+		String returnUrl = "redirect:/teacher/modifyPw";
+		if(row == 1) { // 변경 성공
+			msg = "변경되었습니다.";
+			returnUrl = "redirect:/index";
+		}
+		rttr.addFlashAttribute("msg", msg);
+		return returnUrl;
+	}
+	
+	/* 사원 기능 */
+	
+	// 강사 탈퇴 
+	@GetMapping(value={"/employee/teacher/removeTeacher", "/teacher/removeTeacher"}) // 파라미터안에 value = { , } 형식으로 작성하면 다중맵핑이 가능
+	public String removeTeacher(HttpSession session, @RequestParam(value="teacherNo", required=true) int teacherNo) {
 		int row = teacherService.removeTeacher(teacherNo);
-		log.debug("\u001B[31m"+row+"<--removeTeacher row, TeacherController");
-		return "redirect:/employee/teacher/teacherList";
+		log.debug("\u001B[31m"+row+"<--removeTeacher row ");
+		if(row==1) { // 삭제 성공
+			session.invalidate();
+		}
+		return "redirect:/index";
 	}
 	
 	// 강사 목록 출력 
@@ -96,9 +127,9 @@ public class TeacherController {
 							, @RequestParam(value="rowPerPage", defaultValue="10") int rowPerPage
 							, @RequestParam(value="searchWord", defaultValue="") String searchWord) {
 		
-		log.debug("\u001B[31m"+currentPage+"<--teacherList currentPage, TeacherController");
-		log.debug("\u001B[31m"+rowPerPage+"<--teacherList rowPerPage, TeacherController");
-		log.debug("\u001B[31m"+searchWord+"<--teacherList searchWord, TeacherController");
+		log.debug("\u001B[31m"+currentPage+"<--teacherList currentPage");
+		log.debug("\u001B[31m"+rowPerPage+"<--teacherList rowPerPage");
+		log.debug("\u001B[31m"+searchWord+"<--teacherList searchWord");
 		
 		// 페이징 
 		int count = teacherService.getTeacherCount(searchWord); // 강사 수
@@ -131,12 +162,13 @@ public class TeacherController {
 			endPage = lastPage;
 		}
 		
-		log.debug("\u001B[31m"+lastPage+"<--teacherList lastPage, TeacherController");
-		log.debug("\u001B[31m"+startPage+"<--teacherList startPage, TeacherController");
-		log.debug("\u001B[31m"+endPage+"<--teacherList endPage, TeacherController");
+		log.debug("\u001B[31m"+lastPage+"<--teacherList lastPage");
+		log.debug("\u001B[31m"+startPage+"<--teacherList startPage");
+		log.debug("\u001B[31m"+endPage+"<--teacherList endPage");
 		
 		
 		List<Teacher> list = teacherService.getTeacherList(currentPage, rowPerPage, searchWord);
+		
 		model.addAttribute("list", list);
 		model.addAttribute("searchWord", searchWord);
 		model.addAttribute("currentPage", currentPage);

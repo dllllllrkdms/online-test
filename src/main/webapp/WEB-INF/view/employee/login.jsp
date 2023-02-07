@@ -10,6 +10,7 @@
 	<!-- 로그인 전 -->
 	<c:if test="${loginEmp==null}">
 		<h1>사원 - 로그인</h1>
+		<div>${msg}</div>
 		<form action="${pageContext.request.contextPath}/loginEmp" method="post">
 			<table border="1">
 				<tr>

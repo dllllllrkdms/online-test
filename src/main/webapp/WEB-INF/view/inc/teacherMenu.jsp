@@ -5,5 +5,6 @@
 	<a href="${pageContext.request.contextPath}/teacher/testList">시험관리</a>
 	
 	<a href="${pageContext.request.contextPath}/logout">로그아웃</a>
-	<a href="${pageContext.request.contextPath}/teacher/modifyTeacherPw">비밀번호수정</a>
+	<a href="${pageContext.request.contextPath}/teacher/modifyPw">비밀번호수정</a>
+	<a href="${pageContext.request.contextPath}/teacher/removeTeacher?teacherNo=${loginTeacher.teacherNo}">회원 탈퇴</a>
 </div>

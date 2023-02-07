@@ -7,5 +7,6 @@
 	<a href="${pageContext.request.contextPath}/student/studentTestList"></a>
 	
 	<a href="${pageContext.request.contextPath}/logout">로그아웃</a>
-	<a href="${pageContext.request.contextPath}/student/modifyStudentPw">비밀번호수정</a>
+	<a href="${pageContext.request.contextPath}/student/modifyPw">비밀번호수정</a>
+		<a href="${pageContext.request.contextPath}/student/removeStudent?studentNo=${loginStudent.studentNo}">회원 탈퇴</a> <!-- no 필수 값 -->
 </div>

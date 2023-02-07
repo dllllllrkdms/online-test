@@ -16,6 +16,25 @@ import goodee.gdj58.online.vo.Student;
 public class StudentService {
 	@Autowired StudentMapper studentMapper;
 	
+	// 비밀번호 변경
+	public int modifyStudentPw(int studentNo, String oldPw, String newPw) {
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("studentNo", studentNo);
+		paramMap.put("oldPw", oldPw);
+		paramMap.put("newPw", newPw);
+		return studentMapper.updateStudentPw(paramMap);
+	}
+	
+	// 회원가입
+	public int addStudent(Student student) {
+		return studentMapper.insertStudent(student);
+	}
+	
+	// 로그인
+	public Student login(Student student) {
+		return studentMapper.login(student);
+	}
+	
 	// 학생 수 
 	public int getStudentCount(String searchWord) {
 		return studentMapper.selectStudentCount(searchWord);

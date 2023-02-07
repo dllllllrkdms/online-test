@@ -12,7 +12,7 @@
 		<c:import url="/WEB-INF/view/inc/empMenu.jsp"></c:import> <!-- JSTL로 include하기 -->
 	</div>
 	<h1>사원 - 추가</h1>
-	<div>${errorMsg}</div>
+	<div>${msg}</div>
 	<form action="${pageContext.request.contextPath}/employee/addEmp" method="post">
 		<table border="1">
 			<tr>
