@@ -4,28 +4,27 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>사원 등록 | 온라인 시험 프로젝트</title>
+<title>강사 등록 | 온라인 시험 프로젝트</title>
 </head>
 <body>
-	<!-- empMenu -->
 	<div>
-		<c:import url="/WEB-INF/view/inc/empMenu.jsp"></c:import> <!-- JSTL로 include하기 -->
+		<c:import url="/WEB-INF/view/inc/teacherMenu.jsp"></c:import> 
 	</div>
-	<h1>사원 - 추가</h1>
+	<h1>강사 - 추가</h1>
 	<div>${errorMsg}</div>
-	<form action="${pageContext.request.contextPath}/employee/addEmp" method="post">
+	<form action="${pageContext.request.contextPath}/addTeacher" method="post">
 		<table border="1">
 			<tr>
 				<th>아이디</th>
-				<td><input type="text" name="empId"></td>
+				<td><input type="text" name="teacherId"></td>
 			</tr>
 			<tr>
 				<th>비밀번호</th>
-				<td><input type="password" name="empPw"></td>
+				<td><input type="password" name="teacherPw"></td>
 			</tr>
 			<tr>
 				<th>이름</th>
-				<td><input type="text" name="empName"></td>
+				<td><input type="text" name="teacherName"></td>
 			</tr>
 		</table>
 		<button type="submit">가입</button>

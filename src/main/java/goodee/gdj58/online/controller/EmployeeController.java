@@ -96,11 +96,15 @@ public class EmployeeController {
 		}
 		int row = employeeService.addEmployee(employee); // row == 1 이면 입력성공
 		System.out.println(row+"<-- addEmp row, EmployeeController"); 
-		if(row==1) {
-			model.addAttribute("errorMsg", "등록을 실패했습니다. 다시 시도해주세요.");
-			return "employee/addEmp";
+		
+		String msg = "등록을 실패했습니다. 다시 시도해주세요.";
+		if(row==1) { // 가입 성공
+			msg = "가입을 환영합니다. 로그인 후 이용해주세요.";
+			model.addAttribute("msg", msg);
+			return "redirect:/employee/empList";
 		}
-		return "redirect:/employee/empList"; // sendRedirect , CM -> C 
+		model.addAttribute("errorMsg", msg);
+		return "employee/addEmp"; // sendRedirect , CM -> C 
 	}
 	
 	// 사원리스트 출력

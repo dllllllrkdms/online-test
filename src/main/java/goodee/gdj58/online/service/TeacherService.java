@@ -16,6 +16,15 @@ import goodee.gdj58.online.vo.Teacher;
 public class TeacherService {
 	@Autowired TeacherMapper teacherMapper;
 	
+	// 회원가입 
+	public int addTeacher(Teacher teacher) {
+		return teacherMapper.insertTeacher(teacher);
+	}
+	// 로그인 
+	public Teacher login(Teacher teacher) {
+		return teacherMapper.login(teacher);
+	}
+	
 	// 강사 수 
 	public int getTeacherCount(String searchWord) {
 		return teacherMapper.selectTeacherCount(searchWord);
