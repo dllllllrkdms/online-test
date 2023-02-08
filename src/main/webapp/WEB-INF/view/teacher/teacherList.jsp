@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>강사 목록 | 사원 | 온라인 시험</title>
 </head>
 <body>
 	<!-- empMenu -->

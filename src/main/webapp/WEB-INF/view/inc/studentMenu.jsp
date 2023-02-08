@@ -4,7 +4,7 @@
 		오늘 날짜 시험 리스트는 응시 버튼 - 시험지 출력 (table : question + example) - 답안지 제출 (table : paper)
 		 
 	-->
-	<a href="${pageContext.request.contextPath}/student/studentTestList"></a>
+	<a href="${pageContext.request.contextPath}/student/test/testList">시험 확인</a>
 	
 	<a href="${pageContext.request.contextPath}/logout">로그아웃</a>
 	<a href="${pageContext.request.contextPath}/student/modifyPw">비밀번호수정</a>

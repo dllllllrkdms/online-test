@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="goodee.gdj58.online.mapper.ExampleMapper">
+	
+	<!-- 보기 삭제 -->
+	<delete id="deleteExample" parameterType="Integer">
+		DELETE FROM example
+		WHERE question_no = #{questionNo};
+	</delete>
+	
+	<!-- 보기 수정 -->
+	<update id="updateExample" parameterType="goodee.gdj58.online.vo.Example">
+		UPDATE example
+		SET example_idx = #{exampleIdx}
+			, example_title = #{exampleTitle}
+			, example_ox = #{exampleOx}
+		WHERE example_no = #{exampleNo};
+	</update>
+	
+	<!-- 보기 추가 -->
+	<insert id="insertExample" parameterType="goodee.gdj58.online.vo.Example">
+		INSERT INTO example(
+			question_no
+			, example_idx
+			, example_title
+			, example_ox	
+		) VALUES(
+			#{questionNo}
+			, #{exampleIdx}
+			, #{exampleTitle}
+			, #{exampleOx}
+		);
+	</insert>
+	
+	<!-- 문제 하나의 보기 출력 -->
+	<select id="selectExampleListByQuestion" resultType="goodee.gdj58.online.vo.Example" parameterType="Integer">
+		SELECT example_no exampleNo
+			, question_no questionNo
+			, example_idx exampleIdx
+			, example_title exampleTitle
+			, example_ox exampleOx
+		FROM example
+		WHERE question_no = #{questionNo};
+	</select>
+	
+	<!-- 모든 문제 - 보기 리스트 출력 -->
+	<select id="selectExampleList" resultType="goodee.gdj58.online.vo.Example" parameterType="Integer">
+		SELECT e.example_no exampleNo
+			, e.question_no questionNo
+			, e.example_idx exampleIdx
+			, e.example_title exampleTitle
+			, e.example_ox exampleOx
+		FROM example e
+		INNER JOIN question q 
+		ON e.question_no = q.question_no
+		WHERE q.test_no = #{testNo};
+	</select>
+</mapper>
