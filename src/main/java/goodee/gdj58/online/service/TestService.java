@@ -19,9 +19,9 @@ import lombok.extern.slf4j.Slf4j;
 @Transactional
 public class TestService {
 	@Autowired TestMapper testMapper;
-	@Autowired QuestionMapper questionMapper;
+	@Autowired QuestionMapper questionMapper; 
 	
-	// 시험 삭제
+	// 시험 삭제  트랜잭션 처리 필요.
 	public int removeTest(int testNo) {
 		return testMapper.deleteTest(testNo);
 	}
@@ -42,10 +42,10 @@ public class TestService {
 	}
 	
 	// test 수
-	public int getTestCount(String searchWord) {
+	public int getTestCount(String searchWord, String todayDate) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		// test_title, test_date 검색 --> 수정
 		paramMap.put("searchWord", searchWord);
+		paramMap.put("todayDate", todayDate);
 		return testMapper.selectTestCount(paramMap);
 	}
 
@@ -58,7 +58,7 @@ public class TestService {
 		paramMap.put("searchWord", searchWord);
 		paramMap.put("todayDate", todayDate);
 		if(todayDate!=null&&todayDate.isEmpty()) {
-			log.debug("\u001B[31m"+todayDate+"<--testList todayDate");
+			log.debug("\u001B[31m"+todayDate+"<--getTestList todayDate");
 		}
 		return testMapper.selectTestList(paramMap);
 	}

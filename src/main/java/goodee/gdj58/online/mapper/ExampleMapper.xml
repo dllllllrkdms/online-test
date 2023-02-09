@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="goodee.gdj58.online.mapper.ExampleMapper">
 	
-	<!-- 보기 삭제 -->
+	<!-- 보기 삭제 : 1. 문제 삭제 시 해당 보기들 전부 삭제 2. 보기 하나씩은 삭제 X -->
 	<delete id="deleteExample" parameterType="Integer">
 		DELETE FROM example
 		WHERE question_no = #{questionNo};
@@ -31,6 +31,17 @@
 			, #{exampleOx}
 		);
 	</insert>
+	
+	<!-- 보기 하나 출력 -->
+	<select id="selectExampleOne" resultType="goodee.gdj58.online.vo.Example" parameterType="Integer">
+		SELECT example_no exampleNo
+			, question_no questionNo
+			, example_idx exampleIdx
+			, example_title exampleTitle
+			, example_ox exampleOx
+		FROM example
+		WHERE example_no = #{exampleNo}
+	</select>
 	
 	<!-- 문제 하나의 보기 출력 -->
 	<select id="selectExampleListByQuestion" resultType="goodee.gdj58.online.vo.Example" parameterType="Integer">

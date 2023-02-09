@@ -31,46 +31,43 @@ public class QuestionController {
 		log.debug("\u001B[31m"+row+"<-- removeQuestion questionNo");
 		
 		String msg = "삭제를 실패했습니다. 다시 시도해주세요.";
-		if(row == 2) {
+		if(row == 1) {
 			msg = "삭제되었습니다.";
 		}
 		rttr.addFlashAttribute("msg", msg);
 		return "redirect:/teacher/test/testOne?testNo="+testNo;
 		
 	}
+	
 	// 문제 수정
 	@GetMapping("/teacher/question/modifyQuestion")
 	public String modifyQuestion(Model model, @RequestParam(value="questionNo", required=true) int questionNo) {
 		log.debug("\u001B[31m"+questionNo+"<-- modifyQuestion questionNo");
-		Question question = questionService.getQuestion(questionNo);
-		List<Example> exampleList = exampleService.getExampleListByQuestion(questionNo);
 		
-		model.addAttribute("exampleList", exampleList);
+		Question question = questionService.getQuestion(questionNo);
+		
 		model.addAttribute("question", question);
 		
 		return "question/modifyQuestion";
 	}
 	@PostMapping("/teacher/question/modifyQuestion")
-	public String modifyQuestion(Model model, Question question, Example example) {
-		List<Example> exampleList = example.getExampleList();
+	public String modifyQuestion(Model model, Question question) {
 		log.debug("\u001B[31m"+question+"<-- modifyQuestion question");
-		log.debug("\u001B[31m"+exampleList+"<-- addQuestion exampleList");
 		
-		int row = questionService.modifyQuestion(question, exampleList);
+		int row = questionService.modifyQuestion(question);
 		log.debug("\u001B[31m"+row+"<-- modifyQuestion row");
 		
 		String returnUrl = "redirect:/teacher/test/testOne?testNo="+question.getTestNo();
-		if(row != 6) {
+		if(row != 1) {
 			returnUrl = "question/modifyQuestion";
 			model.addAttribute("msg", "수정 실패했습니다. 다시 시도해주세요.");
-			model.addAttribute("exampleList", exampleList);
 			model.addAttribute("question", question);
 		}
 		return returnUrl;
 	}
 	
 	// 문제 상세보기
-	@GetMapping("/teacher/question/QuestionOne")
+	@GetMapping("/teacher/question/questionOne")
 	public String getQuestion(Model model, @RequestParam(value="questionNo", required=true) int questionNo) {
 		log.debug("\u001B[31m"+questionNo+"<-- getQuestion questionNo");
 		
@@ -87,25 +84,26 @@ public class QuestionController {
 	@GetMapping("/teacher/question/addQuestion")
 	public String addQuestion(Model model, @RequestParam(value="testNo", required=true) int testNo) {
 		log.debug("\u001B[31m"+testNo+"<-- addQuestion testNo");
+		
 		model.addAttribute("testNo", testNo);
+		
 		return "question/addQuestion";
 	}
 	@PostMapping("/teacher/question/addQuestion")
-	public String addQuestion(Model model, Question question, Example example) { // ajax를 사용하지 않고 vo타입이 list<vo>를 필드로 가짐
-		List<Example> exampleList = example.getExampleList();
+	public String addQuestion(Model model, Question question) { 
 		log.debug("\u001B[31m"+question+"<-- addQuestion question");
-		log.debug("\u001B[31m"+exampleList+"<-- addQuestion exampleList");
 		
-		int row = questionService.addQuestion(question, exampleList);
+		int row = questionService.addQuestion(question);
 		log.debug("\u001B[31m"+row+"<-- addQuestion row");
 		
 		String returnUrl = "redirect:/teacher/test/testOne?testNo="+question.getTestNo();
-		if(row != 6) {
+		
+		if(row != 1) {
 			model.addAttribute("msg", "문제 등록에 실패했습니다. 다시 시도해주세요.");
 			model.addAttribute("question", question);
-			model.addAttribute("exampleList", exampleList);
 			returnUrl = "question/addQuestion";
 		}
+		
 		return returnUrl;
 	}
 }

@@ -10,6 +10,7 @@ import goodee.gdj58.online.vo.Question;
 @Mapper
 public interface QuestionMapper {
 	
+	int selectQuestionCount(int testNo);
 	int deleteQuestion(int questionNo);
 	Question selectQuestion(int questionNo);
 	int updateQuestion(Question question);

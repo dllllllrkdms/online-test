@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>시험 | 온라인 시험</title>
+<title>시험 | LMS</title>
 </head>
 <body>
 
@@ -15,16 +15,17 @@
 		</div>
 	</c:if>
 	
-	<h1>강사 - 시험 상세보기</h1>
+	<!-- 학생 메뉴 -->
+	<c:if test="${loginStudent!=null}">
+		<div><c:import url="/WEB-INF/view/inc/studentMenu.jsp"></c:import></div>
+	</c:if>
+	
+	<h1>강사, 학생 - 시험 상세보기</h1>
 	
 	<div>${msg}</div>
 	
-	<!-- 강사 기능 -->
 	<c:if test="${loginTeacher!=null}">
-		<div>
-			<a href="${pageContext.request.contextPath}/teacher/test/modifyTest?testNo=${test.testNo}">수정</a>
-			<a href="${pageContext.request.contextPath}/teacher/test/removeTest?testNo=${test.testNo}">삭제</a>
-		</div>
+		<a href="${pageContext.request.contextPath}/teacher/question/addQuestion?testNo=${test.testNo}">문제 추가</a>
 	</c:if>
 	
 	<!-- 시험 제목 -->
@@ -38,30 +39,34 @@
 			<td>${test.testDate}</td>
 		</tr>
 	</table>
-	
-	<!-- 강사 기능 :  문제 추가 -->
-	<c:if test="${loginTeacher!=null}">
-		<a href="${pageContext.request.contextPath}/teacher/question/addQuestion?testNo=${test.testNo}">문제 추가</a>
-	</c:if>
-	
+
 	<!-- 문제 & 보기 -->
 	<c:forEach var="q" items="${questionList}">
 		<table>
 			<tr>
+				<td>${q.questionIdx}.</td>
+				<td>${q.questionTitle}</td>
 				<td>
-					${q.questionIdx}.
-					<!-- 강사 기능 : 문제 수정 -->
-					<a href="${pageContext.request.contextPath}/teacher/question/modifyQuestion?questionNo=${q.questionNo}">수정</a>
-					<a href="${pageContext.request.contextPath}/teacher/question/removeQuestion?testNo=${q.testNo}&questionNo=${q.questionNo}">삭제</a>
+					<c:if test="${loginTeacher!=null}">
+						<a href="${pageContext.request.contextPath}/teacher/question/modifyQuestion?questionNo=${q.questionNo}">문제 수정</a>
+						<a href="${pageContext.request.contextPath}/teacher/question/removeQuestion?questinoNo=${q.questionNo}">문제 삭제</a>
+					</c:if>
 				</td>
 			</tr>
-			<tr>
-				<td>${q.questionTitle}</td>
-			</tr>
+			<c:if test="${loginTeacher!=null}">
+				<a href="${pageContext.request.contextPath}/teacher/example/addExample?questionNo=${q.questionNo}">보기 추가</a>
+			</c:if>
 			<c:forEach var="e" items="${exampleList}">
 				<c:if test="${q.questionNo == e.questionNo}">
 					<tr>
-						<td>${e.exampleIdx}. ${e.exampleTitle}   ${e.exampleOx}</td>
+						<td>${e.exampleIdx}. ${e.exampleTitle}</td>
+						<td>${e.exampleOx}</td>
+						<td>
+							<c:if test="${loginTeacher!=null}">
+								<a href="${pageContext.request.contextPath}/teacher/example/modifyExample?exampleNo=${e.exampleNo}">보기 수정</a>
+								<a href="${pageContext.request.contextPath}/teacher/example/removeExample?exampleNo=${e.exampleNo}">보기 삭제</a>
+							</c:if>
+						</td>
 					</tr>
 				</c:if>
 			</c:forEach>

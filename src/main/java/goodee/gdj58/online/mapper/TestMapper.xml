@@ -43,6 +43,9 @@
 			<if test="searchWord != null and searchWord != '' ">
 				test_title LIKE CONCAT('%',#{searchWord},'%')
 			</if>
+			<if test="todayDate != null and todayDate != '' ">
+				AND test_date <![CDATA[<=]]> #{todayDate} 
+			</if>
 		</where>
 	</select>
 

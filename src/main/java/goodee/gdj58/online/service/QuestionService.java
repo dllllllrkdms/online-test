@@ -7,9 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import goodee.gdj58.online.mapper.ExampleMapper;
 import goodee.gdj58.online.mapper.QuestionMapper;
-import goodee.gdj58.online.vo.Example;
 import goodee.gdj58.online.vo.Question;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,29 +16,25 @@ import lombok.extern.slf4j.Slf4j;
 @Transactional
 public class QuestionService {
 	@Autowired QuestionMapper questionMapper;
-	@Autowired ExampleMapper exampleMapper;
 	
-	// 삭제
-	public int removeQuestion(int questionNo) {
-		int row = exampleMapper.deleteExample(questionNo);
-		row += questionMapper.deleteQuestion(questionNo);
-		return row;
+	// 문제 수
+	public int getQuestionCount(int testNo) {
+		return questionMapper.selectQuestionCount(testNo);
 	}
 	
-	// 문제 + 보기 수정
-	public int modifyQuestion(Question question, List<Example> exampleList) {
-		log.debug("\u001B[31m"+exampleList+"<-- addQuestion exampleList");
+	// 삭제 트랜잭션 - 보기 처리 필요
+	public int removeQuestion(int questionNo) {
+		return questionMapper.deleteQuestion(questionNo);
+	}
+	
+	// 문제 수정
+	public int modifyQuestion(Question question) {
 		
 		int row = questionMapper.updateQuestion(question);
 		int questionNo = question.getQuestionNo();
 		log.debug("\u001B[31m"+questionNo+"<-- addQuestion questionNo");
-		
-		for(Example e : exampleList) {
-			e.setQuestionNo(questionNo);
-			row += exampleMapper.updateExample(e);
-		}
-		
-		return row; // row == 6 이면 모두 수정 성공
+
+		return row; 
 	}
 	
 	// 상세보기
@@ -48,19 +42,9 @@ public class QuestionService {
 		return questionMapper.selectQuestion(questionNo);
 	}
 	
-	// 문제 + 보기 추가
-	public int addQuestion(Question question, List<Example> exampleList) {
-		log.debug("\u001B[31m"+exampleList+"<-- addQuestion exampleList");
-		
-		int row = questionMapper.insertQuestion(question);
-		int questionNo = question.getQuestionNo();
-		log.debug("\u001B[31m"+questionNo+"<-- addQuestion questionNo");
-		
-		for(Example e : exampleList) {
-			e.setQuestionNo(questionNo);
-			row += exampleMapper.insertExample(e);
-		}
-		return row; // row == 6 이면 모두 추가 성공
+	// 문제 추가
+	public int addQuestion(Question question) {
+		return questionMapper.insertQuestion(question);
 	}
 	
 	// 목록 출력

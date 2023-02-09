@@ -2,10 +2,24 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="goodee.gdj58.online.mapper.QuestionMapper">
 
-	<!-- 문제 삭제 -->
+	<!-- 시험 문제 수 -->
+	<select id="selectQuestionCount" resultType="Integer" parameterType="Integer">
+		SELECT COUNT(*) 
+		FROM question
+		where test_no = #{testNo};
+	</select>
+
+	<!-- 문제 삭제 1. 문제 하나 삭제 2. 시험 삭제 시 해당하는 문제들 모두 삭제 -->
 	<delete id="deleteQuestion" parameterType="Integer">
 		DELETE FROM question
-		WHERE question_no = #{questionNo}
+		<where>
+			<if test="questionNo != null and questionNo != 0">
+				AND question_no = #{questionNo}
+			</if>
+			<if test="testNo != null and testNo != 0">
+				AND test_no = #{testNo}
+			</if>
+		</where>
 	</delete>
 	
 	<!-- 문제 수정 -->
@@ -48,5 +62,6 @@
 			, question_title questionTitle
 		FROM question 
 		WHERE test_no = #{testNo}
+		ORDER BY question_idx ASC;
 	</select>
 </mapper>

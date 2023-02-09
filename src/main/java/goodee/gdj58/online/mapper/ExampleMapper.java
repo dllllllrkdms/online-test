@@ -12,6 +12,7 @@ public interface ExampleMapper {
 	int deleteExample(int questionNo);
 	int updateExample(Example example);
 	int insertExample(Example example);
+	Example selectExampleOne(int exampleNo);
 	List<Example> selectExampleListByQuestion(int questionNo);
 	List<Example> selectExampleList(int testNo);
 	

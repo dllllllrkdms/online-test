@@ -1,9 +1,8 @@
 package goodee.gdj58.online.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -48,7 +47,7 @@ public class TestController {
 	}
 	
 	// 상세보기 - 강사, 학생
-	@GetMapping(value={"/teacher/test/testOne", "/student/test/testOne"}) // 다중 매핑 
+	@GetMapping(value={"/teacher/test/testOne", "/student/test/testOne", "/student/test/paper"}) // 다중 매핑 
 	public String getTestOne(Model model, @RequestParam(value="testNo", required=true) int testNo) {
 		log.debug("\u001B[31m"+testNo+"<-- modifyTest testNo");
 		
@@ -59,6 +58,7 @@ public class TestController {
 		model.addAttribute("questionList", questionList);
 		model.addAttribute("exampleList", exampleList);
 		model.addAttribute("test", test);
+		
 		return "test/testOne";
 	}
 	
@@ -67,7 +67,10 @@ public class TestController {
 	public String modifyTest(Model model, @RequestParam(value="testNo", required=true) int testNo) { 
 		log.debug("\u001B[31m"+testNo+"<-- modifyTest testNo");
 		Test test = testService.getTestOne(testNo);
+		
 		model.addAttribute("test", test);
+		
+		
 		return "test/modifyTest";
 	}
 	@PostMapping("/teacher/test/modifyTest")
@@ -87,16 +90,13 @@ public class TestController {
 	// test 추가
 	@GetMapping("/teacher/test/addTest")
 	public String addTest(Model model) {
+		// 오늘날짜
 		Calendar today = Calendar.getInstance();
-		int year = today.get(Calendar.YEAR);
-		int month = today.get(Calendar.MONTH);
-		int date = today.get(Calendar.DATE)+1; // 내일 일자부터 시험 등록가능
+		String format = "yyyy-MM-dd";
+		today.add(today.get(Calendar.DATE), +1); // 내일부터 등록가능
+		SimpleDateFormat sdf = new SimpleDateFormat(format);
+		String minDate = sdf.format(today.getTime());
 		
-		String monthFormat = month+1 < 10 ? "0" + String.valueOf(month+1) : String.valueOf(month+1);
-		String dateFormat = date < 10 ? "0" + String.valueOf(date) : String.valueOf(date);
-
-		
-		String minDate = year + "-" + monthFormat + "-" + dateFormat;
 		log.debug("\u001B[31m"+minDate+"<-- addTest minDate");
 		
 		model.addAttribute("minDate", minDate);
@@ -108,7 +108,7 @@ public class TestController {
 		int row = testService.addTest(test);
 		log.debug("\u001B[31m"+row+"<-- addTest row");
 		
-		String returnUrl = "redirect:/teacher/test/testOne?testNo=";
+		String returnUrl = "redirect:/teacher/test/testOne?testNo="+test.getTestNo();
 		if(row != 1) {
 			returnUrl = "test/addTest";
 			model.addAttribute("msg", "수정 실패했습니다. 다시 시도해주세요.");
@@ -131,17 +131,33 @@ public class TestController {
 		log.debug("\u001B[31m"+rowPerPage+"<--testList rowPerPage");
 		log.debug("\u001B[31m"+searchWord+"<--testList searchWord");
 		
+		// 오늘날짜
+		String paramTodayDate = null;
+		Calendar today = Calendar.getInstance();
+		String format = "yyyy-MM-dd";
+		SimpleDateFormat sdf = new SimpleDateFormat(format);
+		String todayDate = sdf.format(today.getTime());
 		
+		if(path.equals("student")) {
+			paramTodayDate = todayDate;
+		}
+		
+		
+		log.debug("\u001B[31m"+paramTodayDate+"<--testList paramTodayDate");
+		log.debug("\u001B[31m"+todayDate+"<--testList todayDate");	
+	
 		// 페이징
-		int count = testService.getTestCount(searchWord);
+		int count = testService.getTestCount(searchWord, paramTodayDate);
 		log.debug("\u001B[31m"+count+"<--testList count");
 		if(count==0) {
 			String searchMsg = "검색결과가 없습니다.";
 			if(searchWord.equals("")) {
 				searchMsg = "등록된 시험이 없습니다.";
 			}
+			model.addAttribute("path", path);
 			model.addAttribute("searchWord", searchWord);
 			model.addAttribute("searchMsg", searchMsg);
+			// 날짜를 넣어야하낭?
 			return "test/testList";
 		}
 		int lastPage = count/rowPerPage;
@@ -166,19 +182,8 @@ public class TestController {
 		log.debug("\u001B[31m"+startPage+"<--testList startPage");
 		log.debug("\u001B[31m"+endPage+"<--testList endPage");
 		
-		String todayDate = null;
-		if(path.equals("student")) {
-			Calendar today = Calendar.getInstance();
-			int year = today.get(Calendar.YEAR);
-			int month = today.get(Calendar.MONTH);
-			int date = today.get(Calendar.DATE);
-			
-			todayDate = year+"-"+(month+1)+"-"+date;
-		}
-		log.debug("\u001B[31m"+todayDate+"<--testList todayDate");
-		
 		// model 
-		List<Test> list = testService.getTestList(currentPage, rowPerPage, searchWord, todayDate);
+		List<Test> list = testService.getTestList(currentPage, rowPerPage, searchWord, paramTodayDate);
 		
 		model.addAttribute("list", list);
 		model.addAttribute("searchWord", searchWord);
@@ -186,6 +191,8 @@ public class TestController {
 		model.addAttribute("startPage", startPage);
 		model.addAttribute("endPage", endPage);
 		model.addAttribute("lastPage", lastPage);
+		model.addAttribute("todayDate", todayDate);
+		model.addAttribute("path", path);
 		
 		return "test/testList";
 	}
