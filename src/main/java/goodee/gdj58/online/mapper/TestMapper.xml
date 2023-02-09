@@ -40,7 +40,7 @@
 		SELECT COUNT(*)
 		FROM test
 		<where>
-			<if test="searchWord != null || searchWord != '' ">
+			<if test="searchWord != null and searchWord != '' ">
 				test_title LIKE CONCAT('%',#{searchWord},'%')
 			</if>
 		</where>
@@ -53,8 +53,11 @@
 			, test_date testDate
 		FROM test
 		<where>
-			<if test="searchWord != null || searchWord != '' ">
-				test_title LIKE CONCAT('%',#{searchWord},'%')
+			<if test="searchWord != null and searchWord != '' ">
+				AND test_title LIKE CONCAT('%',#{searchWord},'%')
+			</if>
+			<if test="todayDate != null and todayDate != '' ">
+				AND test_date <![CDATA[<=]]> #{todayDate} 
 			</if>
 		</where>
 		ORDER BY test_date DESC

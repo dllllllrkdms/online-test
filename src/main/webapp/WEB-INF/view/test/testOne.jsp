@@ -7,9 +7,9 @@
 <title>시험 | 온라인 시험</title>
 </head>
 <body>
+
 	<!-- 강사 메뉴 -->
 	<c:if test="${loginTeacher!=null}">
-		<!-- empMenu -->
 		<div>
 			<c:import url="/WEB-INF/view/inc/teacherMenu.jsp"></c:import> <!-- JSTL로 include하기 -->
 		</div>
@@ -20,10 +20,12 @@
 	<div>${msg}</div>
 	
 	<!-- 강사 기능 -->
-	<div>
-		<a href="${pageContext.request.contextPath}/teacher/test/modifyTest?testNo=${test.testNo}">수정</a>
-		<a href="${pageContext.request.contextPath}/teacher/test/removeTest?testNo=${test.testNo}">삭제</a>
-	</div>
+	<c:if test="${loginTeacher!=null}">
+		<div>
+			<a href="${pageContext.request.contextPath}/teacher/test/modifyTest?testNo=${test.testNo}">수정</a>
+			<a href="${pageContext.request.contextPath}/teacher/test/removeTest?testNo=${test.testNo}">삭제</a>
+		</div>
+	</c:if>
 	
 	<!-- 시험 제목 -->
 	<table>
@@ -32,14 +34,15 @@
 			<td>${test.testTitle}</td>
 		</tr>
 		<tr>
-			<!-- 오늘 이전의 날짜가 들어가면 안됨 -->
 			<th>시행 일시</th>
 			<td>${test.testDate}</td>
 		</tr>
 	</table>
 	
 	<!-- 강사 기능 :  문제 추가 -->
-	<a href="${pageContext.request.contextPath}/teacher/question/addQuestion?testNo=${test.testNo}">문제 추가</a>
+	<c:if test="${loginTeacher!=null}">
+		<a href="${pageContext.request.contextPath}/teacher/question/addQuestion?testNo=${test.testNo}">문제 추가</a>
+	</c:if>
 	
 	<!-- 문제 & 보기 -->
 	<c:forEach var="q" items="${questionList}">
@@ -58,7 +61,7 @@
 			<c:forEach var="e" items="${exampleList}">
 				<c:if test="${q.questionNo == e.questionNo}">
 					<tr>
-						<td>${e.exampleIdx}. ${e.exampleTitle}</td>
+						<td>${e.exampleIdx}. ${e.exampleTitle}   ${e.exampleOx}</td>
 					</tr>
 				</c:if>
 			</c:forEach>

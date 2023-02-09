@@ -1,7 +1,9 @@
 package goodee.gdj58.online.controller;
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -115,15 +118,19 @@ public class TestController {
 	}
 	
 	// 리스트 출력
-	@GetMapping("/teacher/test/testList") // 강사와 학생 볼 수 있게 다중 맵핑
+	@GetMapping(value="/{path:^teacher$|^student$}/test/testList") // 다중매핑 정규화 value="{변수명:정규식}" // ^ : 문자열의 시작을 표시 // $ : 문자열의 끝을 표시
 	public String testList(HttpSession session, Model model
+						, @PathVariable String path // 변수명 받기
 						, @RequestParam(value="currentPage", defaultValue="1") int currentPage
 						, @RequestParam(value="rowPerPage", defaultValue="10") int rowPerPage
 						, @RequestParam(value="searchWord", defaultValue="") String searchWord) {
 		
+		log.debug("\u001B[31m"+path+"<--testList path");
+		
 		log.debug("\u001B[31m"+currentPage+"<--testList currentPage");
 		log.debug("\u001B[31m"+rowPerPage+"<--testList rowPerPage");
 		log.debug("\u001B[31m"+searchWord+"<--testList searchWord");
+		
 		
 		// 페이징
 		int count = testService.getTestCount(searchWord);
@@ -159,10 +166,21 @@ public class TestController {
 		log.debug("\u001B[31m"+startPage+"<--testList startPage");
 		log.debug("\u001B[31m"+endPage+"<--testList endPage");
 		
-		// model 
-		List<Test> list = testService.getTestList(currentPage, rowPerPage, searchWord);
+		String todayDate = null;
+		if(path.equals("student")) {
+			Calendar today = Calendar.getInstance();
+			int year = today.get(Calendar.YEAR);
+			int month = today.get(Calendar.MONTH);
+			int date = today.get(Calendar.DATE);
+			
+			todayDate = year+"-"+(month+1)+"-"+date;
+		}
+		log.debug("\u001B[31m"+todayDate+"<--testList todayDate");
 		
-		model.addAttribute("list", list); 
+		// model 
+		List<Test> list = testService.getTestList(currentPage, rowPerPage, searchWord, todayDate);
+		
+		model.addAttribute("list", list);
 		model.addAttribute("searchWord", searchWord);
 		model.addAttribute("currentPage", currentPage);
 		model.addAttribute("startPage", startPage);

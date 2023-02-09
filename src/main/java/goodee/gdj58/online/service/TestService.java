@@ -14,6 +14,7 @@ import goodee.gdj58.online.mapper.TestMapper;
 import goodee.gdj58.online.vo.Test;
 import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @Transactional
 public class TestService {
@@ -49,12 +50,16 @@ public class TestService {
 	}
 
 	// testList 출력 - 강사, 학생
-	public List<Test> getTestList(int currentPage, int rowPerPage, String searchWord) {
+	public List<Test> getTestList(int currentPage, int rowPerPage, String searchWord, String todayDate) {
 		int beginRow = (currentPage-1)*rowPerPage;
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("beginRow", beginRow);
 		paramMap.put("rowPerPage", rowPerPage);
 		paramMap.put("searchWord", searchWord);
+		paramMap.put("todayDate", todayDate);
+		if(todayDate!=null&&todayDate.isEmpty()) {
+			log.debug("\u001B[31m"+todayDate+"<--testList todayDate");
+		}
 		return testMapper.selectTestList(paramMap);
 	}
 }
