@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import goodee.gdj58.online.service.ExampleService;
+import goodee.gdj58.online.service.PaperService;
 import goodee.gdj58.online.service.QuestionService;
 import goodee.gdj58.online.service.TestService;
 import goodee.gdj58.online.vo.Example;
@@ -46,10 +47,11 @@ public class TestController {
 		return "redirect:/teacher/test/testList";
 	}
 	
-	// 상세보기 - 강사, 학생
-	@GetMapping(value={"/teacher/test/testOne", "/student/test/testOne", "/student/test/paper"}) // 다중 매핑 
-	public String getTestOne(Model model, @RequestParam(value="testNo", required=true) int testNo) {
+	// 상세보기 - 강사 // 응시하기 - 학생
+	@GetMapping(value={"/teacher/test/{path:^testOne$}", "/student/test/{path:^testOne$|^paper$}"}) // 다중 매핑 
+	public String getTestOne(Model model, @PathVariable String path, @RequestParam(value="testNo", required=true) int testNo) {
 		log.debug("\u001B[31m"+testNo+"<-- modifyTest testNo");
+		log.debug("\u001B[31m"+path+"<-- modifyTest path");
 		
 		Test test = testService.getTestOne(testNo);
 		List<Question> questionList = questionService.getQuestionList(testNo);
@@ -59,7 +61,7 @@ public class TestController {
 		model.addAttribute("exampleList", exampleList);
 		model.addAttribute("test", test);
 		
-		return "test/testOne";
+		return "test/"+path;
 	}
 	
 	// test 수정
@@ -108,7 +110,7 @@ public class TestController {
 		int row = testService.addTest(test);
 		log.debug("\u001B[31m"+row+"<-- addTest row");
 		
-		String returnUrl = "redirect:/teacher/test/testOne?testNo="+test.getTestNo();
+		String returnUrl = "redirect:/teacher/test/testList";
 		if(row != 1) {
 			returnUrl = "test/addTest";
 			model.addAttribute("msg", "수정 실패했습니다. 다시 시도해주세요.");
@@ -157,7 +159,8 @@ public class TestController {
 			model.addAttribute("path", path);
 			model.addAttribute("searchWord", searchWord);
 			model.addAttribute("searchMsg", searchMsg);
-			// 날짜를 넣어야하낭?
+			model.addAttribute("todayDate", todayDate);
+			
 			return "test/testList";
 		}
 		int lastPage = count/rowPerPage;

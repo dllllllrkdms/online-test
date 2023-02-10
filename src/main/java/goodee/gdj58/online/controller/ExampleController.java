@@ -61,19 +61,23 @@ public class ExampleController {
 	public String addExample(Model model, Example example) {
 		log.debug("\u001B[31m"+example+"<-- addExample example");
 		
-		List<Example> exampleList = example.getExampleList();
+		//List<Example> exampleList = example.getExampleList();
 		
-		int row = 0;
+		int row = exampleService.addExample(example);
+		/*
 		for(Example e : exampleList) {
 			row += exampleService.addExample(e);
 		}
+		*/
 		
-		String returnUrl = "redirect:/teacher/question/addQuestion?questionNo="+example.getQuestionNo();
+		String returnUrl = "redirect:/teacher/test/testList";
+		/*
 		if(row != exampleList.size()) {
 			model.addAttribute("msg", "보기 등록에 실패했습니다. 다시 시도해주세요.");
 			model.addAttribute("questionNo", example.getQuestionNo());
 			returnUrl = "teacher/example/addExample";
 		}
+		*/
 		return returnUrl;
 	}
 }

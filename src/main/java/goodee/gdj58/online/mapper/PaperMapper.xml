@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="goodee.gdj58.online.mapper.PaperMapper">
+	<!-- 점수 확인 -->
+	<select id="getPaperScoreList" resultType="java.util.Map" parameterType="java.util.Map">
+		SELECT p.paper_no paperNo
+			, p.student_no studentNo
+			, p.question_no questinoNo
+			, p.answer 
+			, q.test_no testNo
+			, q.question_idx questionIdx
+			, q.question_title questionTitle
+			, e.example_ox exampleOx
+		FROM paper p 
+		INNER JOIN question q 
+		ON p.question_no = q.question_no
+		INNER JOIN example e
+		ON e.question_no = p.question_no
+		AND e.example_idx = p.answer
+		<where>
+			 AND q.test_no = #{testNo}
+			 AND p.student_no = #{studentNo}
+		</where>
+	</select>
+	
+	<!-- 1. 시험을 봤는지 여부를 알기 위해 count 2. 응시자 수 -->
+	<select id="selectPaperCount" resultType="Integer" parameterType="java.util.Map">
+		SELECT COUNT(*)
+		FROM paper p
+		INNER JOIN question q
+		ON p.question_no = q.question_no
+		<where>
+			AND test_no = #{testNo}
+			<if test="studentNo != null and studentNo != 0">
+				AND student_no = #{studentNo} 
+			</if>
+		</where> 
+	</select> 
+	
+	<!-- 답안 입력 -->
+	<insert id="insertPaper" parameterType="goodee.gdj58.online.vo.Paper">
+		INSERT INTO paper(
+			student_no
+			, question_no
+			, answer
+		) VALUES(
+			#{studentNo}
+			, #{questionNo}
+			, #{answer}
+		) 
+	</insert>
+</mapper>

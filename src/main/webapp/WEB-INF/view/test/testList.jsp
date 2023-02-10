@@ -46,7 +46,7 @@
 		<tbody>
 			<c:forEach var="t" items="${list}">
 				<tr>
-					<td>${t.testNo}</td>
+					<td id="testNo">${t.testNo}</td>
 					<td>
 						<a href="${pageContext.request.contextPath}/${path}/test/testOne?testNo=${t.testNo}">${t.testTitle}</a>	
 					</td>
@@ -63,7 +63,8 @@
 						<!-- 학생 기능 -->
 						<c:if test="${loginStudent != null}">
 							<c:if test="${t.testDate eq todayDate}">
-								<a href="">응시하기</a>
+								<a href="${pageContext.request.contextPath}/student/test/paper?testNo=${t.testNo}">응시하기</a>
+								<a href="${pageContext.request.contextPath}/student/score?testNo=${t.testNo}">점수 확인</a>
 							</c:if>
 						</c:if>
 					</td>
