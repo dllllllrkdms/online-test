@@ -19,6 +19,16 @@
 	
 	<div>${msg}</div>
 	
+	<div>${test.testTitle}</div>
+	<div>일시 : ${test.testDate}</div>
+	<div id="table"></div>
+	<table>
+		<c:forEach var="m" items="+'model'+">
+			
+		</c:forEach>
+	</table>
+	
+	<!-- 문제 추가 -->
 	<form action="${pageContext.request.contextPath}/teacher/question/addQuestion" method="post">
 		<input type="hidden" name="testNo" value="${testNo}">
 		<table border="1">
@@ -33,5 +43,22 @@
 		</table>
 		<button type="submit"> 추가 </button>
 	</form>
+	
+	<!-- 보기 추가 -->
+	<form>
+		
+	</form>
+	
+	<script>
+		$.ajax({
+			url: '/online-test/questionList';
+			, type: 'get'
+			, data : {'testNo': testNo}
+			, success(function(model){
+				let html = '';
+				$('#id').html();
+			})
+		});
+	</script>
 </body>
 </html>

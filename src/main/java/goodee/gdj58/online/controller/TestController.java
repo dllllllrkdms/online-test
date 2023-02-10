@@ -3,6 +3,7 @@ package goodee.gdj58.online.controller;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import goodee.gdj58.online.service.ExampleService;
-import goodee.gdj58.online.service.PaperService;
 import goodee.gdj58.online.service.QuestionService;
 import goodee.gdj58.online.service.TestService;
 import goodee.gdj58.online.vo.Example;
@@ -95,8 +95,8 @@ public class TestController {
 		// 오늘날짜
 		Calendar today = Calendar.getInstance();
 		String format = "yyyy-MM-dd";
-		today.add(today.get(Calendar.DATE), +1); // 내일부터 등록가능
 		SimpleDateFormat sdf = new SimpleDateFormat(format);
+		today.add(Calendar.DATE, +1); // 내일부터 등록가능
 		String minDate = sdf.format(today.getTime());
 		
 		log.debug("\u001B[31m"+minDate+"<-- addTest minDate");
@@ -106,16 +106,20 @@ public class TestController {
 		return "test/addTest";
 	}
 	@PostMapping("/teacher/test/addTest")
-	public String addTest(HttpSession session, Model model, Test test) {
+	public String addTest(HttpSession session, Model model, @RequestParam Map<String,String> map, Test test) {
 		int row = testService.addTest(test);
 		log.debug("\u001B[31m"+row+"<-- addTest row");
 		
-		String returnUrl = "redirect:/teacher/test/testList";
+		String returnUrl = null;
 		if(row != 1) {
 			returnUrl = "test/addTest";
 			model.addAttribute("msg", "수정 실패했습니다. 다시 시도해주세요.");
-			model.addAttribute("test", test);
+		} else {
+			returnUrl = "question/addQuestion";
+			model.addAttribute("map", map);
 		}
+		
+		model.addAttribute("test", test);
 		return returnUrl;
 	}
 	
