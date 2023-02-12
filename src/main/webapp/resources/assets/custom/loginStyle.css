@@ -1,0 +1,11 @@
+@charset "UTF-8";
+
+.userSe > .active{
+	border-radius: 0;
+	font-weight: bold;
+	border-bottom: 2px solid #3b7ddd;
+}
+.msg {
+	margin-top: 10px;
+	color: red;
+}

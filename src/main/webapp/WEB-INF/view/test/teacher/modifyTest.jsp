@@ -4,16 +4,11 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>시험 수정 | 온라인 시험</title>
+<title>시험 수정 | LMS</title>
 </head>
 <body>
 	<!-- 강사 메뉴 -->
-	<c:if test="${loginTeacher!=null}">
-		<!-- empMenu -->
-		<div>
-			<c:import url="/WEB-INF/view/inc/teacherMenu.jsp"></c:import> <!-- JSTL로 include하기 -->
-		</div>
-	</c:if>
+	<div><c:import url="/WEB-INF/view/inc/teacherMenu.jsp"></c:import></div>
 	
 	<h1>강사 - 시험 수정</h1>
 	
@@ -25,7 +20,6 @@
 				<td><input type="text" name="testTitle" value="${test.testTitle}"></td>
 			</tr>
 			<tr>
-				<!-- 오늘 이전의 날짜가 들어가면 안됨 -->
 				<th>시행 일시</th>
 				<td><input type="date" name="testDate" value="${test.testDate}" readonly="readonly"></td>
 			</tr>

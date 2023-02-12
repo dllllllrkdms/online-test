@@ -7,13 +7,7 @@
 <title>문제 추가 | LMS</title>
 </head>
 <body>
-	<!-- 강사 메뉴 -->
-	<c:if test="${loginTeacher!=null}">
-		<!-- empMenu -->
-		<div>
-			<c:import url="/WEB-INF/view/inc/teacherMenu.jsp"></c:import> <!-- JSTL로 include하기 -->
-		</div>
-	</c:if>
+	<div><c:import url="/WEB-INF/view/inc/teacherMenu.jsp"></c:import></div>
 	
 	<h1>강사 - 문제 추가</h1>
 	
@@ -37,28 +31,12 @@
 				<td><input type="number" name="questionIdx" value="${question.questionIdx}"></td>
 			</tr>
 			<tr>
-				<th>문제</th>
-				<td><input type="text" name="questionTitle" value="${question.questionTitle}"></td>
+				<th>문제 내용</th>
+				<td><textarea cols="5" rows="50" name="questionTitle">${qustion.questionTitle}</textarea></td>
 			</tr>
 		</table>
 		<button type="submit"> 추가 </button>
 	</form>
-	
-	<!-- 보기 추가 -->
-	<form>
-		
-	</form>
-	
-	<script>
-		$.ajax({
-			url: '/online-test/questionList';
-			, type: 'get'
-			, data : {'testNo': testNo}
-			, success(function(model){
-				let html = '';
-				$('#id').html();
-			})
-		});
-	</script>
+
 </body>
 </html>

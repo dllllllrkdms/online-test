@@ -47,11 +47,10 @@ public class TestController {
 		return "redirect:/teacher/test/testList";
 	}
 	
-	// 상세보기 - 강사 // 응시하기 - 학생
-	@GetMapping(value={"/teacher/test/{path:^testOne$}", "/student/test/{path:^testOne$|^paper$}"}) // 다중 매핑 
-	public String getTestOne(Model model, @PathVariable String path, @RequestParam(value="testNo", required=true) int testNo) {
+	// 상세보기 
+	@GetMapping(value={"/teacher/test/testOne", "/student/test/testOne"}) // 다중 매핑 
+	public String getTestOne(Model model, @RequestParam(value="testNo", required=true) int testNo) {
 		log.debug("\u001B[31m"+testNo+"<-- modifyTest testNo");
-		log.debug("\u001B[31m"+path+"<-- modifyTest path");
 		
 		Test test = testService.getTestOne(testNo);
 		List<Question> questionList = questionService.getQuestionList(testNo);
@@ -61,7 +60,7 @@ public class TestController {
 		model.addAttribute("exampleList", exampleList);
 		model.addAttribute("test", test);
 		
-		return "test/"+path;
+		return "test/testOne";
 	}
 	
 	// test 수정
@@ -69,9 +68,12 @@ public class TestController {
 	public String modifyTest(Model model, @RequestParam(value="testNo", required=true) int testNo) { 
 		log.debug("\u001B[31m"+testNo+"<-- modifyTest testNo");
 		Test test = testService.getTestOne(testNo);
+		List<Question> questionList = questionService.getQuestionList(testNo);
+		List<Example> exampleList = exampleService.getExampleList(testNo);
 		
 		model.addAttribute("test", test);
-		
+		model.addAttribute("questionList", questionList);
+		model.addAttribute("exampleList", exampleList);
 		
 		return "test/modifyTest";
 	}
@@ -103,7 +105,7 @@ public class TestController {
 		
 		model.addAttribute("minDate", minDate);
 		
-		return "test/addTest";
+		return "teacher/test/addTest";
 	}
 	@PostMapping("/teacher/test/addTest")
 	public String addTest(HttpSession session, Model model, @RequestParam Map<String,String> map, Test test) {
@@ -123,7 +125,7 @@ public class TestController {
 		return returnUrl;
 	}
 	
-	// 리스트 출력
+	// teacher : 모든 시험 출력, student : 지난 시험 출력
 	@GetMapping(value="/{path:^teacher$|^student$}/test/testList") // 다중매핑 정규화 value="{변수명:정규식}" // ^ : 문자열의 시작을 표시 // $ : 문자열의 끝을 표시
 	public String testList(HttpSession session, Model model
 						, @PathVariable String path // 변수명 받기
@@ -132,7 +134,6 @@ public class TestController {
 						, @RequestParam(value="searchWord", defaultValue="") String searchWord) {
 		
 		log.debug("\u001B[31m"+path+"<--testList path");
-		
 		log.debug("\u001B[31m"+currentPage+"<--testList currentPage");
 		log.debug("\u001B[31m"+rowPerPage+"<--testList rowPerPage");
 		log.debug("\u001B[31m"+searchWord+"<--testList searchWord");
@@ -148,58 +149,13 @@ public class TestController {
 			paramTodayDate = todayDate;
 		}
 		
-		
 		log.debug("\u001B[31m"+paramTodayDate+"<--testList paramTodayDate");
 		log.debug("\u001B[31m"+todayDate+"<--testList todayDate");	
-	
-		// 페이징
-		int count = testService.getTestCount(searchWord, paramTodayDate);
-		log.debug("\u001B[31m"+count+"<--testList count");
-		if(count==0) {
-			String searchMsg = "검색결과가 없습니다.";
-			if(searchWord.equals("")) {
-				searchMsg = "등록된 시험이 없습니다.";
-			}
-			model.addAttribute("path", path);
-			model.addAttribute("searchWord", searchWord);
-			model.addAttribute("searchMsg", searchMsg);
-			model.addAttribute("todayDate", todayDate);
-			
-			return "test/testList";
-		}
-		int lastPage = count/rowPerPage;
-		if(count%rowPerPage!=0) {
-			lastPage+=1;
-		}
-		if(currentPage<1) {
-			currentPage = 1;
-		} else if(currentPage>lastPage) {
-			currentPage = lastPage;
-		}
-		int startPage = (currentPage-1)/10*10+1;
-		int endPage = startPage + 9;
-		if(startPage<1) {
-			startPage = 1;
-		} 
-		if(endPage>lastPage) {
-			endPage = lastPage;
-		}
 		
-		log.debug("\u001B[31m"+lastPage+"<--testList lastPage");
-		log.debug("\u001B[31m"+startPage+"<--testList startPage");
-		log.debug("\u001B[31m"+endPage+"<--testList endPage");
+		Map<String, Object> map = testService.getTestList(currentPage, rowPerPage, searchWord, paramTodayDate);
 		
-		// model 
-		List<Test> list = testService.getTestList(currentPage, rowPerPage, searchWord, paramTodayDate);
-		
-		model.addAttribute("list", list);
-		model.addAttribute("searchWord", searchWord);
-		model.addAttribute("currentPage", currentPage);
-		model.addAttribute("startPage", startPage);
-		model.addAttribute("endPage", endPage);
-		model.addAttribute("lastPage", lastPage);
 		model.addAttribute("todayDate", todayDate);
-		model.addAttribute("path", path);
+		model.addAttribute("map", map);
 		
 		return "test/testList";
 	}

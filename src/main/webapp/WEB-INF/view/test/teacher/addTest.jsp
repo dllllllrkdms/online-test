@@ -8,13 +8,11 @@
 </head>
 <body>
 	<!-- 강사 메뉴 -->
-	<div>
-		<c:import url="/WEB-INF/view/inc/teacherMenu.jsp"></c:import> <!-- JSTL로 include하기 -->
-	</div>
+	<div><c:import url="/WEB-INF/view/inc/teacherMenu.jsp"></c:import> <!-- JSTL로 include하기 --></div>
 	
 	<h1>강사 - 시험 추가</h1>
 	
-	<div>${searchMsg}</div>
+	<div>${msg}</div>
 	
 	<form action="${pageContext.request.contextPath}/teacher/test/addTest" method="post">
 		<table border="1">
@@ -28,22 +26,6 @@
 				<td><input type="date" name="testDate" min="${minDate}" value="${test.testDate}"></td>
 			</tr>
 		</table>
-		<table border="1">
-			<!-- db에 들어가지 않음 -->
-			<tr>
-				<th>시험 문항 수</th>
-				<td><input type="number" name="questionNumbers"></td>
-			</tr>
-			<tr>
-				<th>객관식 수</th>
-				<td><input type="number" name="multiple"></td>
-			</tr>
-			<tr>
-				<th>주관식 수</th>
-				<td><input type="number" name="short"></td>
-			</tr>
-		</table>
-		<button type="submit"> 추가 </button>
 	</form>
 </body>
 </html>

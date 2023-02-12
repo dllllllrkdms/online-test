@@ -49,17 +49,6 @@ public class EmployeeController {
 	/*
 	 * 로그인 후에 사용가능한 기능
 	 */
-	// 인덱스
-	@GetMapping("/index")
-	public String index() {
-		return "index";
-	}
-	// 로그아웃
-	@GetMapping("/logout")
-	public String logout(HttpSession session) {
-		session.invalidate();
-		return "redirect:/index";
-	}
 	
 	// 비밀번호 수정 폼 
 	@GetMapping("employee/modifyPw")
@@ -101,14 +90,7 @@ public class EmployeeController {
 	// 사원 등록 action
 	@PostMapping("/employee/addEmp")
 	public String addEmp(HttpSession session, RedirectAttributes rttr, Employee employee) { // 오버로딩
-		// 아이디 중복 확인
-		String idCheck = idService.getIdCheck(employee.getEmpId());
-		log.debug("\u001B[31m"+idCheck+"<-- addEmp idCheck");
-		
-		if(idCheck!=null) {
-			rttr.addFlashAttribute("msg", "중복된 아이디입니다.");
-			return "redirect:/employee/addEmp";
-		}
+	
 		int row = employeeService.addEmployee(employee); // row == 1 이면 입력성공
 		log.debug("\u001B[31m"+row+"<-- addEmp row");
 		

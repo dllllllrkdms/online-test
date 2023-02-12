@@ -1,6 +1,7 @@
 package goodee.gdj58.online.service;
 
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,25 +42,61 @@ public class TestService {
 		return testMapper.insertTest(test);
 	}
 	
-	// test 수
-	public int getTestCount(String searchWord, String todayDate) {
+	// testList 
+	public Map<String, Object> getTestList(int currentPage, int rowPerPage, String searchWord, String todayDate){
+		
+		// 페이징
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("searchWord", searchWord);
 		paramMap.put("todayDate", todayDate);
-		return testMapper.selectTestCount(paramMap);
-	}
-
-	// testList 출력 - 강사, 학생
-	public List<Test> getTestList(int currentPage, int rowPerPage, String searchWord, String todayDate) {
-		int beginRow = (currentPage-1)*rowPerPage;
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("beginRow", beginRow);
-		paramMap.put("rowPerPage", rowPerPage);
-		paramMap.put("searchWord", searchWord);
-		paramMap.put("todayDate", todayDate);
-		if(todayDate!=null&&todayDate.isEmpty()) {
-			log.debug("\u001B[31m"+todayDate+"<--getTestList todayDate");
+		
+		// test 수 조회
+		int count = testMapper.selectTestCount(paramMap);
+		log.debug("\u001B[31m"+count+"<--testList count");
+		if(count==0) {
+			return Collections.emptyMap(); // 비어있는 map 반환
 		}
-		return testMapper.selectTestList(paramMap);
+		int lastPage = count/rowPerPage; // 마지막 목록페이지
+		if(count%rowPerPage!=0) {
+			lastPage+=1;
+		}
+		if(currentPage<1) {
+			currentPage = 1;
+		} 
+		if(currentPage>lastPage) {
+			currentPage = lastPage;
+		}
+		
+		int beginRow = (currentPage-1)*rowPerPage;
+		int pageSize = 10;
+		int startPage = (currentPage-1)/pageSize*pageSize + 1; 
+		int endPage = startPage + pageSize - 1;
+		if(startPage<1) {
+			startPage = 1;
+		} 
+		if(endPage>lastPage) {
+			endPage = lastPage;
+		}
+		
+		log.debug("\u001B[31m"+currentPage+"<--getTestList currentPage");
+		log.debug("\u001B[31m"+rowPerPage+"<--getTestList rowPerPage");
+		log.debug("\u001B[31m"+searchWord+"<--getTestList searchWord");
+		log.debug("\u001B[31m"+lastPage+"<--getTestList lastPage");
+		log.debug("\u001B[31m"+startPage+"<--getTestList startPage");
+		log.debug("\u001B[31m"+endPage+"<--getTestList endPage");
+		
+		
+		paramMap.put("beginRow", beginRow);
+		paramMap.put("currentPage", currentPage);
+		paramMap.put("rowPerPage", rowPerPage);
+		paramMap.put("startPage", startPage);
+		paramMap.put("endPage", endPage);
+		paramMap.put("lastPage", lastPage);
+		
+		List<Test> testList = testMapper.selectTestList(paramMap);
+		
+		paramMap.put("testList", testList);
+		
+		return paramMap;
 	}
 }
