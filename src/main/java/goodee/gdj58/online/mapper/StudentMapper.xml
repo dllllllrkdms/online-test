@@ -37,7 +37,7 @@
 		SELECT COUNT(*)
 		FROM student
 		<where>
-			<if test="searchWord != null || searchWord != '' ">
+			<if test="searchWord != null and searchWord != '' ">
 				student_name LIKE CONCAT('%',#{searchWord},'%');
 			</if>
 		</where>
@@ -56,7 +56,7 @@
 			, student_name studentName
 		FROM student
 		<where>
-			<if test="searchWord != null || searchWord != ''">
+			<if test="searchWord != null and searchWord != ''">
 				student_name LIKE CONCAT('%',#{searchWord},'%')
 			</if>
 		</where>

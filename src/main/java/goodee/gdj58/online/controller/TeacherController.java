@@ -3,6 +3,7 @@ package goodee.gdj58.online.controller;
 
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -125,50 +126,10 @@ public class TeacherController {
 		log.debug("\u001B[31m"+rowPerPage+"<--teacherList rowPerPage");
 		log.debug("\u001B[31m"+searchWord+"<--teacherList searchWord");
 		
-		// 페이징 
-		int count = teacherService.getTeacherCount(searchWord); // 강사 수
-		log.debug("\u001B[31m"+count+"<--teacherList count, TeacherController");
-		if(count==0) {
-			String searchMsg = "검색결과가 없습니다.";
-			if(searchWord.equals("")) {
-				searchMsg = "등록된 강사가 없습니다.";
-			}
-			model.addAttribute("searchWord", searchWord);
-			model.addAttribute("searchMsg", searchMsg);
-			return "teacher/teacherList";
-		}
-		int lastPage = count/rowPerPage;
-		if(count%rowPerPage!=0) {
-			lastPage+=1;
-		}
-		if(currentPage<1) {
-			currentPage = 1;
-		} 
-		if(currentPage>=lastPage) {
-			currentPage = lastPage;
-		}
-		int startPage = (currentPage-1)/10*10+1;
-		int endPage = startPage + 9;
-		if(startPage<1) {
-			startPage = 1;
-		}
-		if(endPage>lastPage) {
-			endPage = lastPage;
-		}
 		
-		log.debug("\u001B[31m"+lastPage+"<--teacherList lastPage");
-		log.debug("\u001B[31m"+startPage+"<--teacherList startPage");
-		log.debug("\u001B[31m"+endPage+"<--teacherList endPage");
+		Map<String, Object> map = teacherService.getTeacherList(currentPage, rowPerPage, searchWord);
 		
-		
-		List<Teacher> list = teacherService.getTeacherList(currentPage, rowPerPage, searchWord);
-		
-		model.addAttribute("list", list);
-		model.addAttribute("searchWord", searchWord);
-		model.addAttribute("currentPage", currentPage);
-		model.addAttribute("startPage", startPage);
-		model.addAttribute("endPage", endPage);
-		model.addAttribute("lastPage", lastPage);
+		model.addAttribute("map", map);
 		
 		return "teacher/teacherList";
 	}

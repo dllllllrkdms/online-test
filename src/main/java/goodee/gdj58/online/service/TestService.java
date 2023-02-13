@@ -82,6 +82,7 @@ public class TestService {
 		log.debug("\u001B[31m"+currentPage+"<--getTestList currentPage");
 		log.debug("\u001B[31m"+rowPerPage+"<--getTestList rowPerPage");
 		log.debug("\u001B[31m"+searchWord+"<--getTestList searchWord");
+		
 		log.debug("\u001B[31m"+lastPage+"<--getTestList lastPage");
 		log.debug("\u001B[31m"+startPage+"<--getTestList startPage");
 		log.debug("\u001B[31m"+endPage+"<--getTestList endPage");

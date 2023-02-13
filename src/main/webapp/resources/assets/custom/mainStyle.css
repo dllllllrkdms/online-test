@@ -23,7 +23,7 @@ tbody > tr > .title a{
 	display: inline-block;
     width: auto;
 }
-.search {
+#searchForm {
 	text-align: right;
 }
 #searchForm > input{

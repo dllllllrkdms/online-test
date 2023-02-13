@@ -47,22 +47,26 @@
 									<div class="row">
 										<div class="col-sm-12 col-md-6">
 											<select id="rowPerPage" class="form-select form-select-sm mb-3">
-												<option>5개씩</option>
-												<option>10개씩</option>
-												<option>20개씩</option>
+												<c:forEach var="r" begin="5" end="15" step="5">
+													<c:if test="${map.rowPerPage == r}">
+														<option value="${r}" selected="selected">${r}개씩</option>
+													</c:if>
+													<c:if test="${map.rowPerPage != r}">
+														<option value="${r}">${r}개씩</option>
+													</c:if>
+												</c:forEach>
 											</select>
 										</div>
 										
 										<div class="col-sm-12 col-md-6">
 											<!-- 검색 -->
-											<div class="search">
-												<form action="${pageContext.request.contextPath}/${path}/test/testList" method="get" id="searchForm">
-													<label>
-														<input type="text" name="searchWord" class="form-control form-control-sm" value="${searchWord}" placeholder="이름을 검색해주세요.">
-													</label>
-													<button type="button" class="btn btn-sm btn-primary" id="searchBtn">검색</button>
-												</form>
-											</div>
+											<form action="${pageContext.request.contextPath}/${path}/test/testList" method="get" id="searchForm">
+												<input type="hidden" name="rowPerPage">
+												<label>
+													<input type="text" name="searchWord" class="form-control form-control-sm" value="${map.searchWord}" placeholder="제목을 검색해주세요.">
+												</label>
+												<button type="button" class="btn btn-sm btn-primary" id="searchBtn">검색</button>
+											</form>
 											
 										</div>
 									</div>
@@ -103,18 +107,18 @@
 										<div class="pagination">
 											<div class="mb-4">
 												<div class="btn-group me-2" role="group" aria-label="First group">
-													<a class="btn" href="${pageContext.request.contextPath}/${path}/test/testList?currentPage=1&searchWord=${searchWord}">처음으로</a>
-													<a class="btn" href="${pageContext.request.contextPath}/${path}/test/testList?currentPage=${map.startPage-1}&searchWord=${searchWord}">이전</a>
+													<a class="btn" href="${pageContext.request.contextPath}/${path}/test/testList?currentPage=1&searchWord=${map.searchWord}&rowPerPage=${map.rowPerPage}">처음으로</a>
+													<a class="btn" href="${pageContext.request.contextPath}/${path}/test/testList?currentPage=${map.startPage-1}&searchWord=${map.searchWord}&rowPerPage=${map.rowPerPage}">이전</a>
 													<c:forEach var="i" begin="${map.startPage}" end="${map.endPage}" step="1">
 														<c:if test="${map.currentPage == i}">
-															<a class="btn active" href="${pageContext.request.contextPath}/employee/student/studentList?currentPage=${i}&searchWord=${searchWord}">${i}</a>
+															<a class="btn active" href="${pageContext.request.contextPath}/${path}/test/testList?currentPage=${i}&searchWord=${map.searchWord}&rowPerPage=${map.rowPerPage}">${i}</a>
 														</c:if>
 														<c:if test="${map.currentPage != i}">
-															<a class="btn" href="${pageContext.request.contextPath}/employee/student/studentList?currentPage=${i}&searchWord=${searchWord}">${i}</a>
+															<a class="btn" href="${pageContext.request.contextPath}/${path}/test/testList?currentPage=${i}&searchWord=${map.searchWord}&rowPerPage=${map.rowPerPage}">${i}</a>
 														</c:if>
 													</c:forEach>
-													<a class="btn" href="${pageContext.request.contextPath}/${path}/test/testList?currentPage=${map.endPage+1}&searchWord=${searchWord}">다음</a>
-													<a class="btn" href="${pageContext.request.contextPath}/${path}/test/testList?currentPage=${map.lastPage}&searchWord=${searchWord}">끝으로</a>
+													<a class="btn" href="${pageContext.request.contextPath}/${path}/test/testList?currentPage=${map.endPage+1}&searchWord=${map.searchWord}&rowPerPage=${map.rowPerPage}">다음</a>
+													<a class="btn" href="${pageContext.request.contextPath}/${path}/test/testList?currentPage=${map.lastPage}&searchWord=${map.searchWord}&rowPerPage=${map.rowPerPage}">끝으로</a>
 												</div>												
 											</div>
 										</div>
@@ -144,6 +148,17 @@
 		if($('#msg').val() != null && $('#msg').val() != ''){
 			alert($('#msg').val());
 		}
+	</script>
+	
+		<script>
+		$('#rowPerPage').change(function(){
+			$('input[name="rowPerPage"]').val($(this).val());
+			$('#searchForm').submit();
+		});
+		$('#searchBtn').click(function(){
+			$('input[name="rowPerPage"]').val($('#rowPerPage').val());
+			$('#searchForm').submit();
+		});
 	</script>
 	
 </body>

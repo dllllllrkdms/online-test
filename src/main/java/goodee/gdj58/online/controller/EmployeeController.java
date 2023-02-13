@@ -1,6 +1,7 @@
 package goodee.gdj58.online.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession; // servlet session 사용
 
@@ -97,66 +98,22 @@ public class EmployeeController {
 		rttr.addFlashAttribute("msg", msg);
 		return returnUrl; // sendRedirect , CM -> C 
 	}
-	
-	// 사원리스트 출력
+	 
+	//
 	@GetMapping("/employee/empList")
 	public String empList(HttpSession session, Model model
 						, @RequestParam(value="currentPage", defaultValue="1") int currentPage
 						, @RequestParam(value="rowPerPage", defaultValue="10") int rowPerPage
-						, @RequestParam(value="searchWord", defaultValue="") String searchWord) { 
-	/*
-	 * @RequestParam(value="x") int y -> int y = request.getParameter("x") 
-	 * defaultValue : null일 시 기본값 설정
-	 * 다양한 타입의 parameter 받기 가능 (자동으로 형 변환됨)
-	 */
-		log.debug("\u001B[31m"+currentPage+"<--empList currentPage, EmployeeController");
-		log.debug("\u001B[31m"+rowPerPage+"<--empList rowPerPage, EmployeeController");
-		log.debug("\u001B[31m"+searchWord+"<--empList searchWord, EmployeeController");
+						, @RequestParam(value="searchWord", defaultValue="") String searchWord) {
 		
-		// 페이징 
-		int count = employeeService.getEmployeeCount(searchWord); // 사원 수 
-		log.debug("\u001B[31m"+count+"<--empList count, EmployeeController");
-		if(count==0) {
-			String searchMsg = "검색결과가 없습니다.";
-			if(searchWord.equals("")) {
-				searchMsg = "등록된 사원이 없습니다.";
-			}
-			model.addAttribute("searchWord", searchWord);
-			model.addAttribute("searchMsg", searchMsg);
-			return "employee/empList";
-		}
-		int lastPage = count/rowPerPage;
-		if(count%rowPerPage!=0) {
-			lastPage+=1;
-		}
-		if(currentPage<1) {
-			currentPage = 1;
-		} else if(currentPage>lastPage) {
-			currentPage = lastPage;
-		}
-		int startPage = (currentPage-1)/10*10+1;
-		int endPage = startPage + 9;
-		if(startPage<1) {
-			startPage = 1;
-		} 
-		if(endPage>lastPage) {
-			endPage = lastPage;
-		}
+		log.debug("\u001B[31m"+currentPage+"<--empList currentPage");
+		log.debug("\u001B[31m"+rowPerPage+"<--empList rowPerPage");
+		log.debug("\u001B[31m"+searchWord+"<--empList searchWord");
 		
-		log.debug("\u001B[31m"+lastPage+"<--empList lastPage, EmployeeController");
-		log.debug("\u001B[31m"+startPage+"<--empList startPage, EmployeeController");
-		log.debug("\u001B[31m"+endPage+"<--empList endPage, EmployeeController");
+		Map<String, Object> map = employeeService.getEmployeeList(currentPage, rowPerPage, searchWord); 
 		
-		// model
-		List<Employee> list = employeeService.getEmployeeList(currentPage, rowPerPage, searchWord); 
+		model.addAttribute("map", map);
 		
-		model.addAttribute("list", list); // request.setAttribute("list", list); 와 동일한 결과. ModelAndView 타입으로 반환하는 방법도 있음.
-		model.addAttribute("searchWord", searchWord);
-		model.addAttribute("currentPage", currentPage);
-		model.addAttribute("startPage", startPage);
-		model.addAttribute("endPage", endPage);
-		model.addAttribute("lastPage", lastPage);
-		
-		return "employee/empList"; // String 메서드의 리턴값은 뷰 이름 -> /WEB-INF/view/online-test/test.jsp 
+		return "employee/empList";
 	}
 }
