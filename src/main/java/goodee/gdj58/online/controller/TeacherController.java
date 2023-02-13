@@ -85,10 +85,6 @@ public class TeacherController {
 	/* 강사 로그인 후 사용 기능*/
 	
 	// 비밀번호 변경
-	@GetMapping("/teacher/modifyPw")
-	public String modifyPw() {
-		return "teacher/modifyPw";
-	}
 	@PostMapping("/teacher/modifyPw")
 	public String modifyPw(HttpSession session, RedirectAttributes rttr, @RequestParam(value="oldPw", required=true) String oldPw, @RequestParam(value="newPw", required=true) String newPw) {
 		Teacher loginTeacher = (Teacher)session.getAttribute("loginTeacher");

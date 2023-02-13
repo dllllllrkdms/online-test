@@ -43,12 +43,13 @@ public class TestService {
 	}
 	
 	// testList 
-	public Map<String, Object> getTestList(int currentPage, int rowPerPage, String searchWord, String todayDate){
+	public Map<String, Object> getTestList(int currentPage, int rowPerPage, String searchWord, String todayDate, String teacherId){
 		
 		// 페이징
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("searchWord", searchWord);
 		paramMap.put("todayDate", todayDate);
+		paramMap.put("teacherId", teacherId);
 		
 		// test 수 조회
 		int count = testMapper.selectTestCount(paramMap);

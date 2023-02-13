@@ -3,54 +3,144 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>강사 목록 | 사원 | 온라인 시험</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="Responsive Admin &amp; Dashboard Template based on Bootstrap 5">
+	<meta name="author" content="AdminKit">
+	<meta name="keywords" content="adminkit, bootstrap, bootstrap 5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
+
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link rel="shortcut icon" href="img/icons/icon-48x48.png" />
+
+	<link rel="canonical" href="https://demo-basic.adminkit.io/pages-sign-in.html" />
+
+	<link href="${pageContext.request.contextPath}/resources/assets/static/css/app.css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+	<link href="${pageContext.request.contextPath}/resources/assets/custom/mainStyle.css" rel="stylesheet">
+
+<title>강사 관리 | LMS</title>
 </head>
 <body>
-	<!-- empMenu -->
-	<div>
-		<c:import url="/WEB-INF/view/inc/empMenu.jsp"></c:import> <!-- JSTL로 include하기 -->
+	<input type="hidden" id="msg" value="${msg}">
+	
+	
+	<div class="wrapper">
+	
+		<c:import url="/WEB-INF/view/inc/sideBar.jsp"></c:import> <!-- JSTL로 include하기 -->
+		
+		<div class="main">
+			<c:import url="/WEB-INF/view/inc/navBar.jsp"></c:import>
+		
+			<main class="content">
+				<div class="container-fluid p-0">
+				
+					<div class="row">
+						<div class="col-12 d-flex">
+						
+							<div class="card flex-fill">
+								<div class="card-body">
+									<div class="row">
+										<div class="col-sm-12 col-md-6">
+											<select id="rowPerPage" class="form-select form-select-sm mb-3">
+												<option>5개씩</option>
+												<option>10개씩</option>
+												<option>20개씩</option>
+											</select>
+										</div>
+										
+										<div class="col-sm-12 col-md-6">
+											<!-- 검색 -->
+											<div class="search">
+												<form action="${pageContext.request.contextPath}/employee/teacher/teacherList" method="get" id="searchForm">
+													<label>
+														<input type="text" name="searchWord" class="form-control form-control-sm" value="${searchWord}" placeholder="이름을 검색해주세요.">
+													</label>
+													<button type="button" class="btn btn-sm btn-primary" id="searchBtn">검색</button>
+												</form>
+											</div>
+											
+										</div>
+									</div>
+									
+									
+									<table class="table table-hover my-0">
+										<thead>
+											<tr>
+												<th>번호</th>
+												<th>아이디</th>
+												<th>이름</th>
+												<td>&nbsp;</td>
+											</tr>
+										</thead>
+										
+										<!-- teacher List -->
+										<tbody id="list">
+											<c:forEach var="t" items="${list}">
+												<tr>
+													<td>${t.teacherNo}</td>
+													<td>${t.teacherId}</td>
+													<td>${t.teacherName}</td>
+													<td><a rel="${t.teacherName}" class="remove btn btn-sm btn-primary" href="${pageContext.request.contextPath}/employee/teacher/removeTeacher?teacherNo=${t.teacherNo}">탈퇴</a></td>
+												</tr>
+											</c:forEach>
+										</tbody>
+									</table>
+									
+							
+									<!-- 페이징 -->
+									<div class="text-center mt-4">
+										<div class="pagination">
+											<div class="mb-4">
+												<div class="btn-group me-2" role="group">
+													<a class="btn" href="${pageContext.request.contextPath}/employee/teacher/teacherList?currentPage=1&searchWord=${searchWord}">처음으로</a>
+													<a class="btn" href="${pageContext.request.contextPath}/employee/teacher/teacherList?currentPage=${startPage-1}&searchWord=${searchWord}">이전</a>
+													<c:forEach var="i" begin="${startPage}" end="${endPage}" step="1">
+														<c:if test="${currentPage == i}">
+															<a class="btn active" href="${pageContext.request.contextPath}/employee/teacher/teacherList?currentPage=${i}&searchWord=${searchWord}">${i}</a>
+														</c:if>
+														<c:if test="${currentPage != i}">
+															<a class="btn" href="${pageContext.request.contextPath}/employee/teacher/teacherList?currentPage=${i}&searchWord=${searchWord}">${i}</a>
+														</c:if>
+													</c:forEach>
+													<a class="btn" href="${pageContext.request.contextPath}/employee/teacher/teacherList?currentPage=${endPage+1}&searchWord=${searchWord}">다음</a>
+													<a class="btn" href="${pageContext.request.contextPath}/employee/teacher/teacherList?currentPage=${lastPage}&searchWord=${searchWord}">끝으로</a>
+												</div>												
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</main>
+		</div>
+	
 	</div>
-	<h1>사원 - 강사 출력</h1>
+	
+	<script src="${pageContext.request.contextPath}/resources/assets/static/js/app.js"></script>
+	
+	<script>
+		$('.remove').click(function(){
+			let result = confirm($(this).attr('rel')+'님, 탈퇴하시겠습니까?');
+			if(result){
+				return true;
+			} else {
+				return false;
+			}
+		});
+	</script>	
+
+	
+
 	
 	<div>${searchMsg}</div>
 	
-	<!-- 검색 -->
-	<form action="${pageContext.request.contextPath}/employee/teacher/teacherList" method="get">
-		<input type="text" name="searchWord" value="${searchWord}">
-		<button type="submit">검색</button>
-	</form>
+
 	
-	<table border="1">
-		<thead>
-			<tr>
-				<th>번호</th>
-				<th>아이디</th>
-				<th>이름</th>
-				<th>&nbsp;</th>
-			</tr>
-		</thead>
-		<tbody>
-			<c:forEach var="t" items="${list}">
-				<tr>
-					<td>${t.teacherNo}</td>
-					<td>${t.teacherId}</td>
-					<td>${t.teacherName}</td>
-					<td><a href="${pageContext.request.contextPath}/employee/teacher/removeTeacher?teacherNo=${t.teacherNo}">삭제</a></td>
-				</tr>
-			</c:forEach>
-		</tbody>
-	</table>
 	
-	<!-- 페이징 -->
-	<div>
-		<a href="${pageContext.request.contextPath}/employee/teacher/teacherList?currentPage=1&searchWord=${searchWord}">처음으로</a>
-		<a href="${pageContext.request.contextPath}/employee/teacher/teacherList?currentPage=${startPage-1}&searchWord=${searchWord}">이전</a>
-		<c:forEach var="i" begin="${startPage}" end="${endPage}" step="1">
-			<a href="${pageContext.request.contextPath}/employee/teacher/teacherList?currentPage=${i}&searchWord=${searchWord}">${i}</a>
-		</c:forEach>
-		<a href="${pageContext.request.contextPath}/employee/teacher/teacherList?currentPage=${endPage+1}&searchWord=${searchWord}">다음</a>
-		<a href="${pageContext.request.contextPath}/employee/teacher/teacherList?currentPage=${lastPage}&searchWord=${searchWord}">끝으로</a>
-	</div>
 </body>
 </html>

@@ -33,7 +33,7 @@ public class PaperController {
 		
 		model.addAttribute("score", score);
 		
-		return "test/score";
+		return "test/student/score";
 	}
 	
 	// 답안 입력

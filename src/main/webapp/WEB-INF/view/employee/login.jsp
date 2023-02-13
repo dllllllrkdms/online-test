@@ -25,8 +25,6 @@
 <title>로그인 | 사원 | LMS</title>
 </head>
 <body>
-
-	<input type="hidden" value="${msg}" id="errorMsg">
 	
 	<main class="d-flex w-100">
 		<div class="container d-flex flex-column">
@@ -61,7 +59,7 @@
 											<div class="msg">${msg}</div>
 										</div>
 										<div class="text-center mt-3">
-											<button type="button" class="btn btn-lg btn-primary">로그인</button>
+											<button type="button" id="submitBtn" class="btn btn-lg btn-primary">로그인</button>
 										</div>
 									</form>
 									
@@ -79,9 +77,6 @@
 	
 	
 	<script>
-		if($('#errorMsg').val() != null && $('#errorMsg').val() != '') {
-			alert($('#errorMsg').val());
-		}
 	
 		$('#submitBtn').click(function(){
 			if($('#empId').val()==0){

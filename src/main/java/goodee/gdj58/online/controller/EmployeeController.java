@@ -50,13 +50,7 @@ public class EmployeeController {
 	 * 로그인 후에 사용가능한 기능
 	 */
 	
-	// 비밀번호 수정 폼 
-	@GetMapping("employee/modifyPw")
-	public String modifyPw() {
-		return "employee/modifyPw";
-	}
-	
-	// 비밀번호 수정 action
+	// 비밀번호 변경
 	@PostMapping("employee/modifyPw")
 	public String modifyPw(HttpSession session, RedirectAttributes rttr, @RequestParam(value="oldPw", required=true) String oldPw, @RequestParam(value="newPw", required=true) String newPw) { // required=true : null이 들어오지 못함. 기본값
 		Employee loginEmp = (Employee)session.getAttribute("loginEmp");

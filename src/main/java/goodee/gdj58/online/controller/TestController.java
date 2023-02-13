@@ -21,6 +21,7 @@ import goodee.gdj58.online.service.QuestionService;
 import goodee.gdj58.online.service.TestService;
 import goodee.gdj58.online.vo.Example;
 import goodee.gdj58.online.vo.Question;
+import goodee.gdj58.online.vo.Teacher;
 import goodee.gdj58.online.vo.Test;
 import lombok.extern.slf4j.Slf4j;
 
@@ -50,7 +51,7 @@ public class TestController {
 	// 상세보기 
 	@GetMapping(value={"/teacher/test/testOne", "/student/test/testOne"}) // 다중 매핑 
 	public String getTestOne(Model model, @RequestParam(value="testNo", required=true) int testNo) {
-		log.debug("\u001B[31m"+testNo+"<-- modifyTest testNo");
+		log.debug("\u001B[31m"+testNo+"<-- getTestOne testNo");
 		
 		Test test = testService.getTestOne(testNo);
 		List<Question> questionList = questionService.getQuestionList(testNo);
@@ -109,6 +110,10 @@ public class TestController {
 	}
 	@PostMapping("/teacher/test/addTest")
 	public String addTest(HttpSession session, Model model, @RequestParam Map<String,String> map, Test test) {
+		
+		Teacher loginTeacher = (Teacher)session.getAttribute("loginTeacher");
+		test.setTeacherId(loginTeacher.getTeacherId());
+		
 		int row = testService.addTest(test);
 		log.debug("\u001B[31m"+row+"<-- addTest row");
 		
@@ -125,7 +130,7 @@ public class TestController {
 		return returnUrl;
 	}
 	
-	// teacher : 모든 시험 출력, student : 지난 시험 출력
+	// teacher : 본인이 작성한 시험 출력, student : 지난 시험 출력
 	@GetMapping(value="/{path:^teacher$|^student$}/test/testList") // 다중매핑 정규화 value="{변수명:정규식}" // ^ : 문자열의 시작을 표시 // $ : 문자열의 끝을 표시
 	public String testList(HttpSession session, Model model
 						, @PathVariable String path // 변수명 받기
@@ -138,6 +143,8 @@ public class TestController {
 		log.debug("\u001B[31m"+rowPerPage+"<--testList rowPerPage");
 		log.debug("\u001B[31m"+searchWord+"<--testList searchWord");
 		
+		String teacherId = null;
+		
 		// 오늘날짜
 		String paramTodayDate = null;
 		Calendar today = Calendar.getInstance();
@@ -147,12 +154,14 @@ public class TestController {
 		
 		if(path.equals("student")) {
 			paramTodayDate = todayDate;
+		} else if(path.equals("teacher")){
+			teacherId = ((Teacher)session.getAttribute("loginTeacher")).getTeacherId();
 		}
 		
 		log.debug("\u001B[31m"+paramTodayDate+"<--testList paramTodayDate");
 		log.debug("\u001B[31m"+todayDate+"<--testList todayDate");	
 		
-		Map<String, Object> map = testService.getTestList(currentPage, rowPerPage, searchWord, paramTodayDate);
+		Map<String, Object> map = testService.getTestList(currentPage, rowPerPage, searchWord, paramTodayDate, teacherId);
 		
 		model.addAttribute("todayDate", todayDate);
 		model.addAttribute("map", map);

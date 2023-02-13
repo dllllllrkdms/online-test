@@ -1,1 +1,39 @@
 @charset "UTF-8";
+/*페이징*/
+.pagination .btn {
+	border: 1px solid #dee2e6;
+}
+.pagination .btn:hover, .pagination .btn:focus {
+	background-color: #e9ecef;
+}
+.pagination .active {
+	background-color: #3b7ddd;
+	color: #ffffff;
+}
+/*테이블*/
+tbody > tr > .title{
+	text-align: left;
+	width: 50%;
+}
+tbody > tr > .title a{
+	color: #495057;
+}
+/*검색*/
+#rowPerPage {
+	display: inline-block;
+    width: auto;
+}
+.search {
+	text-align: right;
+}
+#searchForm > input{
+	display: inline-block;
+    margin-left: 0.5em;
+    width: auto;
+}
+
+#searchForm > label {
+	font-weight: 400;
+    text-align: left;
+    white-space: nowrap;
+}

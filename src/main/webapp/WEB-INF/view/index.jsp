@@ -3,42 +3,46 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>online-test</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="Responsive Admin &amp; Dashboard Template based on Bootstrap 5">
+	<meta name="author" content="AdminKit">
+	<meta name="keywords" content="adminkit, bootstrap, bootstrap 5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
+
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link rel="shortcut icon" href="img/icons/icon-48x48.png" />
+
+	<link rel="canonical" href="https://demo-basic.adminkit.io/pages-sign-in.html" />
+
+	<link href="${pageContext.request.contextPath}/resources/assets/static/css/app.css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+	
+<title>LMS</title>
 </head>
 <body>
-	<h1>index</h1>
-	<div>${msg}</div>
-	<!-- 사원 메뉴 -->
-	<c:if test="${loginEmp!=null}">
-		<!-- empMenu -->
-		<div>
-			<c:import url="/WEB-INF/view/inc/empMenu.jsp"></c:import> <!-- JSTL로 include하기 -->
-		</div>
-	</c:if>
-	<!-- 강사 메뉴 -->
-	<c:if test="${loginTeacher!=null}">
-		<!-- empMenu -->
-		<div>
-			<c:import url="/WEB-INF/view/inc/teacherMenu.jsp"></c:import> <!-- JSTL로 include하기 -->
-		</div>
-	</c:if>
+	<input type="hidden" id="errorMsg" value="${msg}">
 	
-	<!-- 학생 메뉴 -->
-	<c:if test="${loginStudent!=null}">
-		<!-- empMenu -->
-		<div>
-			<c:import url="/WEB-INF/view/inc/studentMenu.jsp"></c:import> <!-- JSTL로 include하기 -->
-		</div>
-	</c:if>
+	<div class="wrapper">
 	
-	<!-- 로그인 전 -->
-	<c:if test="${loginEmp==null && loginTeacher==null && loginStudent==null}">
-		<div>
-			<a href="${pageContext.request.contextPath}/loginEmp">사원 로그인</a>
-			<a href="${pageContext.request.contextPath}/loginTeacher">강사 로그인</a>
-			<a href="${pageContext.request.contextPath}/loginStudent">학생 로그인</a>
+		<c:import url="/WEB-INF/view/inc/sideBar.jsp"></c:import> <!-- JSTL로 include하기 -->
+	
+		<div class="main">
+			<c:import url="/WEB-INF/view/inc/navBar.jsp"></c:import>
+	
 		</div>
-	</c:if>
+	
+	</div>
+	
+	<script src="${pageContext.request.contextPath}/resources/assets/static/js/app.js"></script>
+	
+	<script>
+		if($('#errorMsg').val() != null && $('#errorMsg').val() != '') {
+			alert($('#errorMsg').val());
+		}
+	</script>
+	
 </body>
 </html>

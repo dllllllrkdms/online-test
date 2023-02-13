@@ -25,7 +25,6 @@
 <title>로그인 | 강사 | LMS</title>
 </head>
 <body>
-	<input type="hidden" value="${msg}" id="errorMsg">
 
 	<main class="d-flex w-100">
 		<div class="container d-flex flex-column">
@@ -82,9 +81,6 @@
 	<script src="${pageContext.request.contextPath}/resources/assets/static/js/app.js"></script>
 	
 	<script>
-		if($('#errorMsg').val() != null && $('#errorMsg').val() != '') {
-			alert($('#errorMsg').val());
-		}
 		
 		$('#submitBtn').click(function(){
 			if($('#teacherId').val()==0){

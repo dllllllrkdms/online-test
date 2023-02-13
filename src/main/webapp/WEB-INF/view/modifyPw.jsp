@@ -13,20 +13,19 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com">
 	<link rel="shortcut icon" href="img/icons/icon-48x48.png" />
 
-	<link rel="canonical" href="https://demo-basic.adminkit.io/pages-sign-up.html" />
+	<link rel="canonical" href="https://demo-basic.adminkit.io/pages-sign-in.html" />
 
 	<link href="${pageContext.request.contextPath}/resources/assets/static/css/app.css" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+	<link href="${pageContext.request.contextPath}/resources/assets/custom/loginStyle.css" rel="stylesheet">
 	
-	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/assets/custom/loginStyle.css">
-	
-<title>사원 등록 | LMS</title>
+<title>비밀번호 변경 | LMS</title>
 </head>
 <body>
+	<input type="hidden" id="errorMsg" value="${msg}">
 	
-	<input type="hidden" value="${msg}" id="errorMsg">
 	
 	<div class="wrapper">
 	
@@ -34,7 +33,7 @@
 		
 		<div class="main">
 			<c:import url="/WEB-INF/view/inc/navBar.jsp"></c:import>
-
+			
 			<main class="d-flex w-100">
 				<div class="container d-flex flex-column">
 					<div class="row vh-100">
@@ -42,26 +41,21 @@
 							<div class="d-table-cell align-middle">
 		
 								<div class="text-center mt-4">
-									<h1 class="h2">사원 등록</h1>
+									<h1 class="h2">비밀번호 변경</h1>
 								</div>
-		
+								
 								<div class="card">
 									<div class="card-body">
 										<div class="m-sm-4">
-											<form action="${pageContext.request.contextPath}/addEmp" method="post" id="form">
+											<form action="${pageContext.request.contextPath}/${path}/modifyPw" method="post" id="form">
 												<div class="mb-3">
-													<label class="form-label" for="empName">이름</label>
-													<input class="form-control form-control-lg" type="text" id="empName" name="empName" />
+													<label class="form-label" for="oldPw">현재 비밀번호</label>
+													<input class="form-control form-control-lg" type="password" id="oldPw" name="oldPw" />
 													<div class="msg"></div>
 												</div>
 												<div class="mb-3">
-													<label class="form-label" for="empId">아이디</label>
-													<input class="form-control form-control-lg" type="text" id="empId" name="empId" />
-													<div class="msg"></div>
-												</div>
-												<div class="mb-3">
-													<label class="form-label" for="empPw">비밀번호</label>
-													<input class="form-control form-control-lg" type="password" id="empPw" name="empPw" />
+													<label class="form-label" for="newPw">새 비밀번호</label>
+													<input class="form-control form-control-lg" type="password" id="newPw" name="newPw" />
 													<div class="msg"></div>
 												</div>
 												<div class="mb-3">
@@ -91,58 +85,29 @@
 		if($('#errorMsg').val() != null && $('#errorMsg').val() != '') {
 			alert($('#errorMsg').val());
 		}
-	
-		let idck = 0;
-		$('#empId').blur(function(){
-			idck = 0;
-			let id = $(this).val();
-			console.log(id);
-			
-			$.ajax({
-				url: '/online-test/idck'
-				, type: 'post'
-				, data: {'id': id}
-				, success: function(model){
-					let msg = ' ' + id +'은/는 사용중인 아이디입니다.';
-					if(model=='YES') { // 사용가능한 아이디
-						msg = '';
-						idck += 1;
-					}
-					$($('.msg')[1]).text(msg);
-				}
-			});
-		});
 		
 		$('#submitBtn').click(function(){
 			$('.msg').text('');
-			console.log(idck);
-			if($('#empName').val()==0){
-				$($('.msg')[0]).text(' 이름을 입력해주세요.');
-				$('#empName').focus();
+			if($('#oldPw').val()==0){
+				$($('.msg')[0]).text(' 현재 비밀번호를 입력해주세요.');
+				$('#oldPw').focus();
 				return;
 			}
-			if($('#empId').val()==0){
-				$($('.msg')[1]).text(' 아이디를 입력해주세요.');
-				$('#empId').focus();
+			if($('#newPw').val()==0){
+				$($('.msg')[1]).text(' 새 비밀번호를 입력해주세요.');
+				$('#newPw').focus();
 				return;
 			}
-			if($('#empPw').val()==0){
-				$($('.msg')[2]).text(' 비밀번호를 입력해주세요.');
-				$('#empPw').focus();
-				return;
-			}
-			if($('#empPw').val()!=$('#checkPw').val()){
-				$($('.msg')[3]).text(' 비밀번호와 비밀번호 확인이 맞지 않습니다.');
-				$('#empPw').focus();
-				return;
-			}
-			if(idck != 1) {
-				$('#empId').focus();
+			if($('#newPw').val()!=$('#checkPw').val()){
+				$($('.msg')[2]).text(' 비밀번호와 비밀번호 확인이 맞지 않습니다.');
+				$('#newPw').focus();
 				return;
 			}
 			$('#form').submit();
 		});
 	</script>
 	
+		
+
 </body>
 </html>

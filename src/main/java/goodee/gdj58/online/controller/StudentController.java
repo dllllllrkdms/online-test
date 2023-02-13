@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -79,10 +80,6 @@ public class StudentController {
 	/* 학생 로그인 후 사용 기능 */
 
 	// 비밀번호 변경
-	@GetMapping("/student/modifyPw")
-	public String modifyPw() {
-		return "student/modifyPw";
-	}
 	@PostMapping("/student/modifyPw")
 	public String modifyPw(HttpSession session, RedirectAttributes rttr, @RequestParam(value="oldPw", required=true) String oldPw, @RequestParam(value="newPw", required=true) String newPw) {
 		Student loginStudent = (Student)session.getAttribute("loginStudent");
