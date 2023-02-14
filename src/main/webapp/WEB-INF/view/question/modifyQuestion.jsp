@@ -3,36 +3,110 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="Responsive Admin &amp; Dashboard Template based on Bootstrap 5">
+	<meta name="author" content="AdminKit">
+	<meta name="keywords" content="adminkit, bootstrap, bootstrap 5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
+
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link rel="shortcut icon" href="img/icons/icon-48x48.png" />
+
+	<link rel="canonical" href="https://demo-basic.adminkit.io/pages-sign-in.html" />
+
+	<link href="${pageContext.request.contextPath}/resources/assets/static/css/app.css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+	<link href="${pageContext.request.contextPath}/resources/assets/custom/mainStyle.css" rel="stylesheet">
+	
 <title>문제 수정 | LMS</title>
 </head>
 <body>
-	<!-- 강사 메뉴 -->
-	<c:if test="${loginTeacher!=null}">
-		<!-- empMenu -->
-		<div>
-			<c:import url="/WEB-INF/view/inc/teacherMenu.jsp"></c:import> <!-- JSTL로 include하기 -->
+	<div class="wrapper">
+	
+		<c:import url="/WEB-INF/view/inc/sideBar.jsp"></c:import> <!-- JSTL로 include하기 -->
+	
+		<div class="main">
+			<c:import url="/WEB-INF/view/inc/navBar.jsp"></c:import>
+			
+			<main class="content">
+				<div class="container-fluid p-0">
+				
+					<div class="row">
+						<div class="col-12 d-flex">
+						
+							<div class="card flex-fill">
+								<div class="card-body">
+									
+									<div class="col-12 mt-3">
+										<!-- 문제 수정 -->
+										<form action="${pageContext.request.contextPath}/teacher/test/modifyQuestion" method="post">
+											<input type="hidden" name="questionNo" value="${question.questionNo}">
+											<input type="hidden" name="testNo" value="${question.testNo}">
+											<table class="table">
+												<tr>
+													<th>번호</th>
+													<td><input class="form-control" type="number" name="questionIdx" value="${question.questionIdx}" readonly="readonly"></td>
+												</tr>
+												<tr>
+													<th>문제 내용</th>
+													<td><textarea class="form-control" cols="50" rows="5" name="questionTitle">${question.questionTitle}</textarea></td>
+												</tr>
+											</table>
+											
+											<table class="table">
+												<c:forEach var="e" items="${exampleList}" varStatus="s">
+													<tr>
+														<td style="width: 20%">
+															<input type="hidden" name="exampleList[${s.index}].questionNo" value="${question.questionNo}">
+															<input type="hidden" name="exampleList[${s.index}].exampleNo" value="${e.exampleNo}">
+															<input class="form-control" type="number" name="exampleList[${s.index}].exampleIdx" value="${e.exampleIdx}" readonly="readonly">
+														</td>
+														<td><input class="form-control" type="text" name="exampleList[${s.index}].exampleTitle" value="${e.exampleTitle}"></td>
+														<td>
+															<c:if test="${e.exampleOx == '정답'}">
+																<input class="exampleO form-check-input" type="radio" name="exampleList[${s.index}].exampleOx" value="정답" checked="checked">정답
+																<input class="exampleX form-check-input" type="radio" name="exampleList[${s.index}].exampleOx" value="오답">오답
+															</c:if>
+															<c:if test="${e.exampleOx == '오답'}">
+																<input class="exampleO form-check-input" type="radio" name="exampleList[${s.index}].exampleOx" value="정답">정답
+																<input class="exampleX form-check-input" type="radio" name="exampleList[${s.index}].exampleOx" value="오답" checked="checked">오답
+															</c:if>
+														</td>
+													</tr>
+												</c:forEach>
+											</table>
+											<button type="submit">추가</button>
+										</form>
+									</div>
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</main>
 		</div>
-	</c:if>
+	</div>
 	
-	<h1>강사 - 문제 수정</h1>
+	<script src="${pageContext.request.contextPath}/resources/assets/static/js/app.js"></script>
+
 	
-	<div>${msg}</div>
-	
-	<form action="${pageContext.request.contextPath}/teacher/question/modifyQuestion" method="post">
-		<input type="hidden" name="questionNo" value="${question.questionNo}">
-		<input type="hidden" name="testNo" value="${question.testNo}">
-		<table border="1">
-			<tr>
-				<th>문제 번호</th>
-				<td><input type="text" name="questionIdx" value="${question.questionIdx}"></td>
-			</tr>
-			<tr>
-				<th>문제</th>
-				<td><input type="text" name="questionTitle" value="${question.questionTitle}"></td>
-			</tr>
-		</table>
-		<button type="submit"> 수정 </button>
-	</form>
+	<script>
+		$('.exampleO').click(function(){
+			let checkIndex = $('.exampleO').index(this);
+			console.log(checkIndex+'클릭인덱스');
+			$('.exampleX').each(function(index, item){
+				
+				if( index != checkIndex){
+					console.log(index+'오답 인덱스');
+					$(item).attr('checked', true);
+				}
+			});	
+		});
+	</script>
+
 </body>
 </html>

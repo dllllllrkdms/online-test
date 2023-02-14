@@ -56,10 +56,20 @@ public class TestController {
 		Test test = testService.getTestOne(testNo);
 		List<Question> questionList = questionService.getQuestionList(testNo);
 		List<Example> exampleList = exampleService.getExampleList(testNo);
+		int questionCount = questionService.getQuestionCount(testNo);
+		
+		// 오늘날짜
+		Calendar today = Calendar.getInstance();
+		String format = "yyyy-MM-dd";
+		SimpleDateFormat sdf = new SimpleDateFormat(format);
+		today.add(Calendar.DATE, +1); // 내일부터 등록가능
+		String minDate = sdf.format(today.getTime());
 		
 		model.addAttribute("questionList", questionList);
 		model.addAttribute("exampleList", exampleList);
 		model.addAttribute("test", test);
+		model.addAttribute("questionCount", questionCount);
+		model.addAttribute("minDate", minDate);
 		
 		return "test/testOne";
 	}
@@ -72,9 +82,17 @@ public class TestController {
 		List<Question> questionList = questionService.getQuestionList(testNo);
 		List<Example> exampleList = exampleService.getExampleList(testNo);
 		
+		// 오늘날짜
+		Calendar today = Calendar.getInstance();
+		String format = "yyyy-MM-dd";
+		SimpleDateFormat sdf = new SimpleDateFormat(format);
+		today.add(Calendar.DATE, +1); // 내일부터 등록가능
+		String minDate = sdf.format(today.getTime());
+		
 		model.addAttribute("test", test);
 		model.addAttribute("questionList", questionList);
 		model.addAttribute("exampleList", exampleList);
+		model.addAttribute("minDate", minDate);
 		
 		return "test/modifyTest";
 	}

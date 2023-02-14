@@ -20,12 +20,10 @@
 	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 	<link href="${pageContext.request.contextPath}/resources/assets/custom/mainStyle.css" rel="stylesheet">
-	
-<title>시험 | LMS</title>
+
+<title>시험 수정 | LMS</title>
 </head>
 <body>
-	<input type="hidden" id="msg" value="${msg}">
-
 	<div class="wrapper">
 	
 		<c:import url="/WEB-INF/view/inc/sideBar.jsp"></c:import> <!-- JSTL로 include하기 -->
@@ -37,62 +35,64 @@
 				<div class="container-fluid p-0">
 					
 					<div class="row">
-						<!-- 시험 제목 -->
-						<table class="mb-3">
-							<tr>
-								<th>시험 제목</th>
-								<td>${test.testTitle}</td>
-							</tr>
-							<tr>
-								<th>시행 일시</th>
-								<td>${test.testDate}</td>
-							</tr>
-							<tr>
-								<th>총 문항 수</th>
-								<td>${questionCount}</td>
-							</tr>
-						</table>
-						
-						<!-- 강사 기능 : 문제 추가 -->
-						<c:if test="${loginTeacher != null}">
-							<c:if test="${minDate < test.testDate}">
-								<div class="mb-3"><a class="btn btn-primary" href="${pageContext.request.contextPath}/teacher/test/addQuestion?testNo=${test.testNo}">문제 추가</a></div>
-							</c:if>
-						</c:if>
-					</div>		
-					<div class="row">
-						<div class="col-md-6">
-							<!-- 문제 & 보기 -->
-							<c:forEach var="q" items="${questionList}">
-								<table class="mb-3">
-									<tr>
-										<td>${q.questionIdx}.</td>
-										<td>${q.questionTitle}</td>
-									</tr>
-									<c:forEach var="e" items="${exampleList}">
-										<c:if test="${q.questionNo == e.questionNo}">
+						<div class="col-12 d-flex">
+							
+							<div class="card flex-fill">
+								<div class="card-body">
+	
+									<form action="${pageContext.request.contextPath}/teacher/test/modifyTest" method="post">
+										<input type="hidden" name="testNo" value="${test.testNo}">
+										<table class="table">
 											<tr>
-												<td>${e.exampleIdx}. ${e.exampleTitle}</td>
-												<td>${e.exampleOx}</td>
+												<th style="width: 20%">시험 제목</th>
+												<td><input type="text" name="testTitle" value="${test.testTitle}" class="form-control"></td>
 											</tr>
-										</c:if>
-									</c:forEach>
-								</table>
-							</c:forEach>
+											<tr>
+												<th>시행 일시</th>
+												<td><input type="date" name="testDate" value="${test.testDate}" readonly="readonly"></td>
+											</tr>
+										</table>
+										<div class="text-center">
+											<button type="submit" class="btn btn-primary"> 수정 </button>
+										</div>
+									</form>
+									
+									<hr>
+									
+									<table class="table">
+										<tr>
+											<th>번호</th>
+											<th >문제 내용</th>
+											<th style="width: 15%">&nbsp;</th>
+										</tr>
+							
+										<c:forEach var="q" items="${questionList}">
+									
+											<tr>
+												<td>${q.questionNo}</td>
+												<td>${q.questionTitle}</td>
+												<td><a href="${pageContext.request.contextPath}/teacher/test/modifyQuestion?questionNo=${q.questionNo}" class="btn btn-sm btn-primary">관리</a></td>
+											</tr>
+												
+										</c:forEach>
+									</table>
+								</div>
+							</div>
+							
 						</div>
 					</div>
-					
 				</div>
+					
 			</main>
 		</div>
 	</div>
 	
+	
 	<script>
-		if($('#msg').val() != null && $('#msg').val() != ''){
-			alert($('#msg').val());
-		}
+		$('#addQuestion').click(function(){
+			
+		});
 	</script>
-		
 	
 </body>
 </html>

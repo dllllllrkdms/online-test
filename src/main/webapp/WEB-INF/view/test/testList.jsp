@@ -89,7 +89,7 @@
 													<td class="d-none d-xl-table-cell">${t.testDate}</td>
 													<td>
 														<c:if test="${loginTeacher != null}">
-															<a class="btn btn-sm btn-primary" href="${pageContext.request.contextPath}/teacher/test/modifyTest?testNo=${t.testNo}">수정</a>
+															<a class="btn btn-sm btn-primary" href="${pageContext.request.contextPath}/teacher/test/modifyTest?testNo=${t.testNo}">관리</a>
 														</c:if>
 														
 														<!-- 응시 여부 확인 후 -->
@@ -131,8 +131,6 @@
 				</div>
 			</main>
 		</div>
-		
-		
 	
 	</div>
 	
