@@ -39,7 +39,7 @@
 				
 					
 					<div class="row">
-						<div class="col-12 col-lg-8 col-xxl-9 d-flex">
+						<div class="col-12 d-flex">
 						
 							<div class="card flex-fill">
 								<div class="card-body">
@@ -88,14 +88,10 @@
 													<td class="title"><a href="${pageContext.request.contextPath}/${path}/test/testOne?testNo=${t.testNo}">${t.testTitle}</a></td>
 													<td class="d-none d-xl-table-cell">${t.testDate}</td>
 													<td>
-														<c:if test="${loginTeacher != null}">
+														<c:if test="${loginTeacher != null && todayDate < t.testDate}">
 															<a class="btn btn-sm btn-primary" href="${pageContext.request.contextPath}/teacher/test/modifyTest?testNo=${t.testNo}">관리</a>
 														</c:if>
 														
-														<!-- 응시 여부 확인 후 -->
-														<c:if test="${loginStudent!=null}">
-															<a class="btn btn-sm btn-primary" href="${pageContext.request.contextPath}/student/score?testNo=${t.testNo}">점수</a>
-														</c:if>
 													</td>
 												</tr>
 											</c:forEach>

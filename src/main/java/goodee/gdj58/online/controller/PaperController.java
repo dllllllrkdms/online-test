@@ -26,9 +26,9 @@ public class PaperController {
 	public String getPaperScore(HttpSession session, Model model, @RequestParam(value="testNo", required=true) int testNo) {
 		Student loginStudent = (Student)session.getAttribute("loginStudent");
 		
-		int questionCount = questionService.getQuestionCount(testNo);
 		
-		int score = paperService.getPaperScore(testNo, loginStudent.getStudentNo(), questionCount);
+		
+		int score = paperService.getPaperScore(testNo, loginStudent.getStudentNo());
 		log.debug("\u001B[31m"+score+"<-- getPaperScore score");
 		
 		model.addAttribute("score", score);

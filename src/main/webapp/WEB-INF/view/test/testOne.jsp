@@ -36,56 +36,61 @@
 			<main class="content">
 				<div class="container-fluid p-0">
 					
-					<div class="row">
-						<!-- 시험 제목 -->
-						<table class="mb-3">
-							<tr>
-								<th>시험 제목</th>
-								<td>${test.testTitle}</td>
-							</tr>
-							<tr>
-								<th>시행 일시</th>
-								<td>${test.testDate}</td>
-							</tr>
-							<tr>
-								<th>총 문항 수</th>
-								<td>${questionCount}</td>
-							</tr>
-						</table>
+					<div class="col-md-8">
+						<div class="row">
 						
-						<!-- 강사 기능 : 문제 추가 -->
-						<c:if test="${loginTeacher != null}">
-							<c:if test="${minDate < test.testDate}">
-								<div class="mb-3"><a class="btn btn-primary" href="${pageContext.request.contextPath}/teacher/test/addQuestion?testNo=${test.testNo}">문제 추가</a></div>
-							</c:if>
-						</c:if>
-					</div>		
-					<div class="row">
-						<div class="col-md-6">
-							<!-- 문제 & 보기 -->
-							<c:forEach var="q" items="${questionList}">
-								<table class="mb-3">
-									<tr>
-										<td>${q.questionIdx}.</td>
-										<td>${q.questionTitle}</td>
-									</tr>
-									<c:forEach var="e" items="${exampleList}">
-										<c:if test="${q.questionNo == e.questionNo}">
-											<tr>
-												<td>${e.exampleIdx}. ${e.exampleTitle}</td>
-												<td>${e.exampleOx}</td>
-											</tr>
-										</c:if>
-									</c:forEach>
-								</table>
-							</c:forEach>
+							<!-- 시험 제목 -->
+							<table class="mb-3">
+								<tr>
+									<th>시험 제목</th>
+									<td>${test.testTitle}</td>
+								</tr>
+								<tr>
+									<th>시행 일시</th>
+									<td>${test.testDate}</td>
+								</tr>
+								<tr>
+									<th>총 문항 수</th>
+									<td>${questionCount}</td>
+								</tr>
+							</table>
+							
+						</div>		
+						<div class="row">
+							<div class="col-md-6">
+								<!-- 문제 & 보기 -->
+								<c:forEach var="q" items="${questionList}">
+									<c:if test="${q.questionIdx != 1 && q.questionIdx % 5 == 1 }">
+										</div>
+										
+										<div class="col-md-6">
+									</c:if>
+									<table class="mb-3 table table-borderless ">
+										<tr style="border-bottom: 1px solid gray">
+											<th style="width: 10%">${q.questionIdx}.</th>
+											<th>${q.questionTitle}</th>
+										</tr>
+										<c:forEach var="e" items="${exampleList}">
+											<c:if test="${q.questionNo == e.questionNo}">
+												<tr>
+													<td>${e.exampleIdx}.</td>
+													<td>${e.exampleTitle}</td>
+												</tr>
+											</c:if>		
+										</c:forEach>
+									</table>
+								</c:forEach>
+								
+							</div>
+						
 						</div>
 					</div>
-					
 				</div>
 			</main>
 		</div>
 	</div>
+	
+	<script src="${pageContext.request.contextPath}/resources/assets/static/js/app.js"></script>
 	
 	<script>
 		if($('#msg').val() != null && $('#msg').val() != ''){

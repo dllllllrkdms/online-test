@@ -1,7 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="goodee.gdj58.online.mapper.TestMapper">
-
+	
+	<!-- 학생이 응시한 시험 수 -->
+	<select id="selectTestCountByStudent" resultType="java.util.Map" parameterType="java.util.Map">
+		SELECT t.test_no testNo
+			,COUNT(*) over(PARTITION BY t.test_no) as count
+		FROM question q
+		INNER JOIN paper p
+		ON p.question_no = q.question_no
+		INNER JOIN test t
+		ON t.test_no = q.test_no
+		WHERE p.student_no = '5'
+		GROUP BY t.test_no
+	</select>
+	
+	<!-- 학생이 응시한 시험 출력 -->
+	<select id="selectTestListByStudent" resultType="java.util.Map" parameterType="java.util.Map">
+		SELECT t.test_no testNo
+			, t.test_title testTitle
+			, t.test_date testDate
+			, t.teacher_id teacherId
+		FROM question q
+		INNER JOIN paper p
+		ON p.question_no = q.question_no
+		INNER JOIN test t
+		ON t.test_no = q.test_no
+		WHERE p.student_no = ${studentNo}
+		GROUP BY t.test_no
+		ORDER BY test_date DESC
+		LIMIT #{beginRow}, #{rowPerPage};
+	</select>
+	
 	<!-- 시험 삭제 -->
 	<delete id="deleteTest" parameterType="Integer">
 		DELETE FROM test

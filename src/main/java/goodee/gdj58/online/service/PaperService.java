@@ -17,12 +17,15 @@ import lombok.extern.slf4j.Slf4j;
 @Transactional
 public class PaperService {
 	@Autowired PaperMapper paperMapper;
+	@Autowired QuestionService questionService;
 	
 	// 점수 확인
-	public int getPaperScore(int testNo, int studentNo, int questionCount) {
+	public int getPaperScore(int testNo, int studentNo) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("testNo", testNo);
 		paramMap.put("studentNo", studentNo);
+		
+		int questionCount = questionService.getQuestionCount(testNo);
 		
 		int totalScore = 100;
 		double scorePerQuestion = totalScore/questionCount;
@@ -36,18 +39,15 @@ public class PaperService {
 				myScore += scorePerQuestion;
 			} 
 		}
+		log.debug("\u001B[31m"+myScore+"<--getPaperScore score");
 		return myScore;
 	}
 	
-	// 응시자 수, 응시했는지 여부를 알기 위한 답안 count
-	public int getPaperCount(int testNo, int studentNo) {
+	// 응시자 수
+	public int getPaperCount(int testNo) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("testNo", testNo);
-		paramMap.put("studentNo", studentNo);
-		int count = paperMapper.selectPaperCount(paramMap);
-		if(studentNo!=0) {
-			
-		}
+		int count = paperMapper.selectPaperCount(testNo);
 		return count;
 	}
 	

@@ -11,6 +11,6 @@ import goodee.gdj58.online.vo.Paper;
 public interface PaperMapper {
 	
 	List<Map<String, Object>> getPaperScoreList(Map<String, Object> paramMap);
-	int selectPaperCount(Map<String, Object> paramMap);
+	int selectPaperCount(int testNo);
 	int insertPaper(Paper paper);
 }

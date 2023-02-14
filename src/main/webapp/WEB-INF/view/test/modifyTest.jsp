@@ -53,12 +53,13 @@
 											</tr>
 										</table>
 										<div class="text-center">
-											<button type="submit" class="btn btn-primary"> 수정 </button>
+											<button type="submit" class="btn btn-primary"> 저장 </button>
 										</div>
 									</form>
 									
 									<hr>
-									
+									<div class="mb-3"><a class="btn btn-primary" href="${pageContext.request.contextPath}/teacher/test/addQuestion?testNo=${test.testNo}">문제 추가</a></div>
+							
 									<table class="table">
 										<tr>
 											<th>번호</th>
@@ -69,7 +70,7 @@
 										<c:forEach var="q" items="${questionList}">
 									
 											<tr>
-												<td>${q.questionNo}</td>
+												<td>${q.questionIdx}</td>
 												<td>${q.questionTitle}</td>
 												<td><a href="${pageContext.request.contextPath}/teacher/test/modifyQuestion?questionNo=${q.questionNo}" class="btn btn-sm btn-primary">관리</a></td>
 											</tr>
@@ -86,13 +87,8 @@
 			</main>
 		</div>
 	</div>
-	
-	
-	<script>
-		$('#addQuestion').click(function(){
-			
-		});
-	</script>
+
+	<script src="${pageContext.request.contextPath}/resources/assets/static/js/app.js"></script>
 	
 </body>
 </html>

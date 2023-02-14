@@ -1,7 +1,9 @@
 package goodee.gdj58.online.controller;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +23,7 @@ import goodee.gdj58.online.service.QuestionService;
 import goodee.gdj58.online.service.TestService;
 import goodee.gdj58.online.vo.Example;
 import goodee.gdj58.online.vo.Question;
+import goodee.gdj58.online.vo.Student;
 import goodee.gdj58.online.vo.Teacher;
 import goodee.gdj58.online.vo.Test;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +34,22 @@ public class TestController {
 	@Autowired TestService testService;
 	@Autowired QuestionService questionService;
 	@Autowired ExampleService exampleService;
+	
+	// 학생이 응시한 테스트 목록 출력
+	@GetMapping("/student/test/myTestList")
+	public String getTestListByStudent(HttpSession session, Model model, @RequestParam(value="currentPage", defaultValue = "1") int currentPage
+									,  @RequestParam(value="rowPerPage", defaultValue = "10") int rowPerPage) {
+		
+		log.debug("\u001B[31m"+currentPage+"<-- myTestList currentPage");
+		
+		Student loginStudent = (Student)session.getAttribute("loginStudent");
+		
+		Map<String, Object> map = testService.getTestListByStudent(currentPage, rowPerPage, loginStudent.getStudentNo());
+		
+		model.addAttribute("map", map);
+		
+		return "student/myTestList";
+	}
 	
 	// test 삭제 
 	@GetMapping("/teacher/test/removeTest")
@@ -87,7 +106,21 @@ public class TestController {
 		String format = "yyyy-MM-dd";
 		SimpleDateFormat sdf = new SimpleDateFormat(format);
 		today.add(Calendar.DATE, +1); // 내일부터 등록가능
-		String minDate = sdf.format(today.getTime());
+		String minDate1 = sdf.format(today.getTime());
+		
+		Date minDate = null;
+		Date testDate = null;
+		try {
+			minDate = sdf.parse(minDate1);
+			testDate = sdf.parse(test.getTestDate());
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		
+		if(testDate.before(minDate)) {
+			return "redirect:/teacher/test/testList";
+		}
 		
 		model.addAttribute("test", test);
 		model.addAttribute("questionList", questionList);
