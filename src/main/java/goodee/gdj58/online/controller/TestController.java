@@ -116,8 +116,6 @@ public class TestController {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		
-		
 		if(testDate.before(minDate)) {
 			return "redirect:/teacher/test/testList";
 		}

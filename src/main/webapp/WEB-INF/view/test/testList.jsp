@@ -84,7 +84,7 @@
 										<tbody id="list">
 											<c:forEach var="t" items="${map.testList}">
 												<tr>
-													<td>${t.testNo}</td>
+													<td style="width: 20%">${t.testNo}</td>
 													<td class="title"><a href="${pageContext.request.contextPath}/${path}/test/testOne?testNo=${t.testNo}">${t.testTitle}</a></td>
 													<td class="d-none d-xl-table-cell">${t.testDate}</td>
 													<td>

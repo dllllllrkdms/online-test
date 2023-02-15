@@ -155,5 +155,7 @@
 			</main>
 		</div>
 	</div>
+		
+	<script src="${pageContext.request.contextPath}/resources/assets/static/js/app.js"></script>
 </body>					
 </html>
