@@ -2,8 +2,8 @@
 
 <ul class="sidebar-nav">
 	<li class="sidebar-item">
-		<a class="sidebar-link" href="">
-	        <i class="align-middle" data-feather="sliders"></i> <span class="align-middle">캘린더</span>
+		<a class="sidebar-link" href="${pageContext.request.contextPath}/student/calendar">
+	        <i class="align-middle me-2" data-feather="calendar"></i> <span class="align-middle">캘린더</span>
 	    </a>
 	</li>
 	<li class="sidebar-item">
@@ -25,7 +25,7 @@
 	
 	<li class="sidebar-item">
 		<a class="sidebar-link" href="${pageContext.request.contextPath}/student/test/testList">
-	    	<i class="align-middle" data-feather="user"></i> <span class="align-middle">시험 보기</span>
+	    	<i class="align-middle" data-feather="user"></i> <span class="align-middle">지난 시험 보기</span>
 	    </a>
 	</li>
 	

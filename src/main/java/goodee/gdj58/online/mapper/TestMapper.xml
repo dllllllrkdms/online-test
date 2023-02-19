@@ -11,7 +11,7 @@
 		ON p.question_no = q.question_no
 		INNER JOIN test t
 		ON t.test_no = q.test_no
-		WHERE p.student_no = '5'
+		WHERE p.student_no = ${studentNo}
 		GROUP BY t.test_no
 	</select>
 	
@@ -80,8 +80,51 @@
 			</if>
 		</where>
 	</select>
+	
+	<!-- 지난 시험 출력 -->
+	<select id="selectPastTestList" resultType="goodee.gdj58.online.vo.Test" parameterType="java.util.Map">
+		SELECT test_no testNo
+			, test_title testTitle
+			, test_date testDate
+			, teacher_id teacherId
+		FROM test
+		<where>
+			<if test="teacherId != null and teacherId != '' ">
+				AND teacher_id LIKE CONCAT(#{teacherId})
+			</if>
+			<if test="searchWord != null and searchWord != '' ">
+				AND test_title LIKE CONCAT('%',#{searchWord},'%')
+			</if>
+			<if test="todayDate != null and todayDate != '' ">
+				AND test_date <![CDATA[<]]> #{todayDate} 
+			</if>
+		</where>
+		ORDER BY test_date DESC
+		LIMIT #{beginRow}, #{rowPerPage};
+	</select>
+	
+	<!-- 오늘 시험 출력 -->
+	<select id="selectTodayTestList" resultType="goodee.gdj58.online.vo.Test" parameterType="java.util.Map">
+		SELECT test_no testNo
+			, test_title testTitle
+			, test_date testDate
+			, teacher_id teacherId
+		FROM test
+		<where>
+			<if test="teacherId != null and teacherId != '' ">
+				AND teacher_id LIKE CONCAT(#{teacherId})
+			</if>
+			<if test="searchWord != null and searchWord != '' ">
+				AND test_title LIKE CONCAT('%',#{searchWord},'%')
+			</if>
+			<if test="todayDate != null and todayDate != '' ">
+				AND test_date = #{todayDate} 
+			</if>
+		</where>
+		LIMIT #{beginRow}, #{rowPerPage};
+	</select>
 
-	<!-- 리스트 출력 - 강사 : 강사가 작성한 시험 출력 // 학생 : 지난 시험, 오늘 시험 출력 -->
+	<!-- 예정 시험 출력 -->
 	<select id="selectTestList" resultType="goodee.gdj58.online.vo.Test" parameterType="java.util.Map">
 		SELECT test_no testNo
 			, test_title testTitle
@@ -96,7 +139,7 @@
 				AND test_title LIKE CONCAT('%',#{searchWord},'%')
 			</if>
 			<if test="todayDate != null and todayDate != '' ">
-				AND test_date <![CDATA[<=]]> #{todayDate} 
+				AND test_date <![CDATA[>]]> #{todayDate} 
 			</if>
 		</where>
 		ORDER BY test_date DESC

@@ -2,7 +2,7 @@
 <ul class="sidebar-nav">
 	<li class="sidebar-item">
 		<a class="sidebar-link" href="">
-	        <i class="align-middle" data-feather="sliders"></i> <span class="align-middle">캘린더</span>
+	        <i class="align-middle me-2" data-feather="calendar"></i> <span class="align-middle">캘린더</span>
 	    </a>
 	</li>
 

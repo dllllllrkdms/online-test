@@ -103,22 +103,18 @@
 									<table class="table table-hover my-0 text-center">
 										<thead>
 											<tr>
-												<th>번호</th>
 												<th>제목</th>
-												<th class="d-none d-xl-table-cell">시험일</th>
 												<th>점수</th>
+												<th>&nbsp;</th>
 											</tr>
 										</thead>
 										<!-- test List -->
 										<tbody id="list">
 											<c:forEach var="t" items="${map.testList}">
 												<tr>
-													<td>${t.testNo}</td>
-													<td class="title"><a href="${pageContext.request.contextPath}/${path}/test/testOne?testNo=${t.testNo}">${t.testTitle}</a></td>
-													<td class="d-none d-xl-table-cell">${t.testDate}</td>
-													<td>
-														${t.score}
-													</td>
+													<td>${t.testTitle}</td>
+													<td>${t.score}</td>
+													<td><a href="${pageContext.request.contextPath}/student/answer?testNo=${t.testNo}">답안확인</a></td>
 												</tr>
 											</c:forEach>
 										</tbody>

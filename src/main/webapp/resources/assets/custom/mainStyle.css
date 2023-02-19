@@ -1,5 +1,8 @@
 @charset "UTF-8";
 /*페이징*/
+.pagination {
+	display : inline-block;
+}
 .pagination .btn {
 	border: 1px solid #dee2e6;
 }
@@ -36,4 +39,9 @@ tbody > tr > .title a{
 	font-weight: 400;
     text-align: left;
     white-space: nowrap;
+}
+
+/* 메시지 */
+.msg, .modifyMsg, .addMsg {
+	color: #d92121;
 }

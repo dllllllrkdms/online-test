@@ -77,7 +77,7 @@ public class TeacherController {
 		if(resultTeacher!=null) { // 로그인 성공
 			msg = "";
 			session.setAttribute("loginTeacher", resultTeacher);
-			redirectUrl = "redirect:/index";
+			redirectUrl = "redirect:/teacher/calendar";
 		}
 		rttr.addFlashAttribute("msg", msg);
 		return redirectUrl;
@@ -96,7 +96,7 @@ public class TeacherController {
 		String returnUrl = "redirect:/teacher/modifyPw";
 		if(row == 1) { // 변경 성공
 			msg = "변경되었습니다.";
-			returnUrl = "redirect:/index";
+			returnUrl = "redirect:/teacher/calendar";
 		}
 		rttr.addFlashAttribute("msg", msg);
 		return returnUrl;
@@ -112,7 +112,7 @@ public class TeacherController {
 		if(row==1) { // 삭제 성공
 			session.invalidate();
 		}
-		return "redirect:/index";
+		return "redirect:/loginTeacher";
 	}
 	
 	// 강사 목록 출력 

@@ -1,5 +1,9 @@
 package goodee.gdj58.online.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +13,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import goodee.gdj58.online.service.ExampleService;
 import goodee.gdj58.online.service.PaperService;
 import goodee.gdj58.online.service.QuestionService;
+import goodee.gdj58.online.service.TestService;
+import goodee.gdj58.online.vo.Example;
 import goodee.gdj58.online.vo.Paper;
+import goodee.gdj58.online.vo.Question;
 import goodee.gdj58.online.vo.Student;
+import goodee.gdj58.online.vo.Test;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -20,13 +29,38 @@ import lombok.extern.slf4j.Slf4j;
 public class PaperController {
 	@Autowired QuestionService questionService;
 	@Autowired PaperService paperService;
+	@Autowired TestService testService;
+	@Autowired ExampleService exampleService;
+	
+	// 답안
+	@GetMapping("/student/answer")
+	public String getPaperOne(Model model, @RequestParam(value="testNo", required=true) int testNo) {
+		
+		Test test = testService.getTestOne(testNo);
+		List<Question> questionList = questionService.getQuestionList(testNo);
+		List<Example> exampleList = exampleService.getExampleList(testNo);
+		int questionCount = questionService.getQuestionCount(testNo);
+		
+		// 오늘날짜
+		Calendar today = Calendar.getInstance();
+		String format = "yyyy-MM-dd";
+		SimpleDateFormat sdf = new SimpleDateFormat(format);
+		today.add(Calendar.DATE, +1); // 내일부터 등록가능
+		String minDate = sdf.format(today.getTime());
+		
+		model.addAttribute("questionList", questionList);
+		model.addAttribute("exampleList", exampleList);
+		model.addAttribute("test", test);
+		model.addAttribute("questionCount", questionCount);
+		model.addAttribute("minDate", minDate);
+
+		return "student/answer";
+	}
 	
 	// 점수 확인 
 	@GetMapping("/student/score")
 	public String getPaperScore(HttpSession session, Model model, @RequestParam(value="testNo", required=true) int testNo) {
 		Student loginStudent = (Student)session.getAttribute("loginStudent");
-		
-		
 		
 		int score = paperService.getPaperScore(testNo, loginStudent.getStudentNo());
 		log.debug("\u001B[31m"+score+"<-- getPaperScore score");

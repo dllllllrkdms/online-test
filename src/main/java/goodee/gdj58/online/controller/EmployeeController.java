@@ -41,7 +41,7 @@ public class EmployeeController {
 		if(resultEmp!=null) { // 로그인 성공
 			msg = "";
 			session.setAttribute("loginEmp", resultEmp);
-			redirectUrl = "redirect:/index";
+			redirectUrl = "redirect:/employee/calendar";
 		}
 		rttr.addFlashAttribute("msg", msg);
 		return redirectUrl;
@@ -62,7 +62,7 @@ public class EmployeeController {
 		String returnUrl = "redirect:/employee/modifyPw";
 		if(row == 1) { // 변경 성공
 			msg = "변경되었습니다.";
-			returnUrl = "redirect:/index";
+			returnUrl = "redirect:/employee/calendar";
 		}
 		rttr.addFlashAttribute("msg", msg);
 		return returnUrl;

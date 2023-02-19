@@ -28,7 +28,7 @@ public class TeacherLoginFilter implements Filter{
 			HttpServletRequest req = (HttpServletRequest)request;
 			HttpSession session = req.getSession();
 			if(session.getAttribute("loginTeacher")==null) {
-				((HttpServletResponse)response).sendRedirect(req.getContextPath()+"/index");
+				((HttpServletResponse)response).sendRedirect(req.getContextPath()+"/loginTeacher");
 				return;
 			}
 			

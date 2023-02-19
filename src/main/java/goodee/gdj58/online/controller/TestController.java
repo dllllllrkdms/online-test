@@ -142,21 +142,6 @@ public class TestController {
 	}
 	
 	// test 추가
-	@GetMapping("/teacher/test/addTest")
-	public String addTest(Model model) {
-		// 오늘날짜
-		Calendar today = Calendar.getInstance();
-		String format = "yyyy-MM-dd";
-		SimpleDateFormat sdf = new SimpleDateFormat(format);
-		today.add(Calendar.DATE, +1); // 내일부터 등록가능
-		String minDate = sdf.format(today.getTime());
-		
-		log.debug("\u001B[31m"+minDate+"<-- addTest minDate");
-		
-		model.addAttribute("minDate", minDate);
-		
-		return "teacher/test/addTest";
-	}
 	@PostMapping("/teacher/test/addTest")
 	public String addTest(HttpSession session, Model model, @RequestParam Map<String,String> map, Test test) {
 		
@@ -179,9 +164,9 @@ public class TestController {
 		return returnUrl;
 	}
 	
-	// teacher : 본인이 작성한 시험 출력, student : 지난 시험 출력
-	@GetMapping(value="/{path:^teacher$|^student$}/test/testList") // 다중매핑 정규화 value="{변수명:정규식}" // ^ : 문자열의 시작을 표시 // $ : 문자열의 끝을 표시
-	public String testList(HttpSession session, Model model
+	// 지난 시험 출력
+	@GetMapping(value="/{path:^teacher$|^student$}/test/pastTestList") // 다중매핑 정규화 value="{변수명:정규식}" // ^ : 문자열의 시작을 표시 // $ : 문자열의 끝을 표시
+	public String pastTestList(HttpSession session, Model model
 						, @PathVariable String path // 변수명 받기
 						, @RequestParam(value="currentPage", defaultValue="1") int currentPage
 						, @RequestParam(value="rowPerPage", defaultValue="10") int rowPerPage
@@ -195,24 +180,57 @@ public class TestController {
 		String teacherId = null;
 		
 		// 오늘날짜
+		Calendar today = Calendar.getInstance();
+		String format = "yyyy-MM-dd";
+		SimpleDateFormat sdf = new SimpleDateFormat(format);
+		String todayDate = sdf.format(today.getTime());
+		today.add(Calendar.DATE, +2);
+		String tomorrow = sdf.format(today.getTime());
+		
+		if(path.equals("teacher")){
+			teacherId = ((Teacher)session.getAttribute("loginTeacher")).getTeacherId();
+		}
+		
+		log.debug("\u001B[31m"+todayDate+"<--testList todayDate");	
+		
+		Map<String, Object> map = testService.getPastTestList(currentPage, rowPerPage, searchWord, todayDate, teacherId);
+		
+		model.addAttribute("minDate", tomorrow);
+		model.addAttribute("map", map);
+		
+		return "test/pastTestList";
+	}
+	
+	// 예정 시험 출력
+	@GetMapping(value="/teacher/test/testList") // 다중매핑 정규화 value="{변수명:정규식}" // ^ : 문자열의 시작을 표시 // $ : 문자열의 끝을 표시
+	public String testList(HttpSession session, Model model
+						, @RequestParam(value="currentPage", defaultValue="1") int currentPage
+						, @RequestParam(value="rowPerPage", defaultValue="10") int rowPerPage
+						, @RequestParam(value="searchWord", defaultValue="") String searchWord) {
+		
+		log.debug("\u001B[31m"+currentPage+"<--testList currentPage");
+		log.debug("\u001B[31m"+rowPerPage+"<--testList rowPerPage");
+		log.debug("\u001B[31m"+searchWord+"<--testList searchWord");
+		
+		String teacherId = null;
+		
+		// 오늘날짜
 		String paramTodayDate = null;
 		Calendar today = Calendar.getInstance();
 		String format = "yyyy-MM-dd";
 		SimpleDateFormat sdf = new SimpleDateFormat(format);
 		String todayDate = sdf.format(today.getTime());
+		today.add(Calendar.DATE, +1);
+		String tomorrow = sdf.format(today.getTime());
 		
-		if(path.equals("student")) {
-			paramTodayDate = todayDate;
-		} else if(path.equals("teacher")){
-			teacherId = ((Teacher)session.getAttribute("loginTeacher")).getTeacherId();
-		}
+		
 		
 		log.debug("\u001B[31m"+paramTodayDate+"<--testList paramTodayDate");
 		log.debug("\u001B[31m"+todayDate+"<--testList todayDate");	
 		
-		Map<String, Object> map = testService.getTestList(currentPage, rowPerPage, searchWord, paramTodayDate, teacherId);
+		Map<String, Object> map = testService.getTestList(currentPage, rowPerPage, searchWord, todayDate, teacherId);
 		
-		model.addAttribute("todayDate", todayDate);
+		model.addAttribute("minDate", tomorrow);
 		model.addAttribute("map", map);
 		
 		return "test/testList";

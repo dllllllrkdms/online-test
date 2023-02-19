@@ -72,7 +72,7 @@ public class StudentController {
 		if(resultStudent!=null) { // 로그인 성공
 			msg = "";
 			session.setAttribute("loginStudent", resultStudent);
-			redirectUrl = "redirect:/index";
+			redirectUrl = "redirect:/student/calendar";
 		}
 		rttr.addFlashAttribute("msg", msg);
 		return redirectUrl;
@@ -91,7 +91,7 @@ public class StudentController {
 		String returnUrl = "redirect:/student/modifyPw";
 		if(row == 1) { // 변경 성공
 			msg = "변경되었습니다.";
-			returnUrl = "redirect:/index";
+			returnUrl = "redirect:/student/calendar";
 		}
 		rttr.addFlashAttribute("msg", msg);
 		return returnUrl;
@@ -107,7 +107,7 @@ public class StudentController {
 		if(row==1) { // 삭제 성공
 			session.invalidate();
 		}
-		return "redirect:/index";
+		return "redirect:/loginStudent";
 	}
 	
 	// 학생 목록 출력 

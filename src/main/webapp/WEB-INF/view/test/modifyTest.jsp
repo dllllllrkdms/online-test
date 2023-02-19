@@ -40,23 +40,17 @@
 							<div class="card flex-fill">
 								<div class="card-body">
 	
-									<form action="${pageContext.request.contextPath}/teacher/test/modifyTest" method="post">
-										<input type="hidden" name="testNo" value="${test.testNo}">
 										<table class="table">
 											<tr>
 												<th style="width: 20%">시험 제목</th>
-												<td><input type="text" name="testTitle" value="${test.testTitle}" class="form-control"></td>
+												<td>${test.testTitle}</td>
 											</tr>
 											<tr>
 												<th>시행 일시</th>
-												<td><input type="date" name="testDate" value="${test.testDate}" readonly="readonly"></td>
+												<td>${test.testDate}</td>
 											</tr>
 										</table>
-										<div class="text-center">
-											<button type="submit" class="btn btn-primary"> 저장 </button>
-										</div>
-									</form>
-									
+										
 									<hr>
 									<div class="mb-3"><a class="btn btn-primary" href="${pageContext.request.contextPath}/teacher/test/addQuestion?testNo=${test.testNo}">문제 추가</a></div>
 							

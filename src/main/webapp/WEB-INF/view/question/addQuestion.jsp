@@ -75,7 +75,9 @@
 													</tr>
 												</c:forEach>
 											</table>
-											<button type="submit">추가</button>
+											<div class="text-center">
+												<button type="submit" class="btn btn-primary">추가</button>
+											</div>
 										</form>
 									</div>
 

@@ -12,17 +12,18 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j	
 @Controller
 public class MainController {
-	
-	// 인덱스
-	@GetMapping("/index")
-	public String index() {
-		return "index";
+
+	// calendar
+	@GetMapping("/{path:^student$|^teacher$|^employee$}/calendar")
+	public String calendar() {
+		return "calendar";
 	}
+	
 	// 로그아웃
 	@GetMapping("/logout")
 	public String logout(HttpSession session) {
 		session.invalidate();
-		return "redirect:/index";
+		return "redirect:/loginStudent";
 	}
 	// 비밀번호 변경 form
 	@GetMapping("/{path:^student$|^teacher$|^employee$}/modifyPw")
