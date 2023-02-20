@@ -162,19 +162,16 @@ public class TestService {
 		
 		return paramMap;
 	}
-	
-	// testList 
-	public Map<String, Object> getTestList(int currentPage, int rowPerPage, String searchWord, String todayDate, String teacherId){
+	// test 페이징
+	public Map<String, Object> getTestPaging(int currentPage, int rowPerPage, String searchWord, String todayDate, String teacherId){
 		
-		// 페이징
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("searchWord", searchWord);
 		paramMap.put("todayDate", todayDate);
 		paramMap.put("teacherId", teacherId);
 		
-		// test 수 조회
 		int count = testMapper.selectTestCount(paramMap);
-		log.debug("\u001B[31m"+count+"<--testList count");
+		
 		if(count==0) {
 			return Collections.emptyMap(); // 비어있는 map 반환
 		}
@@ -200,25 +197,39 @@ public class TestService {
 			endPage = lastPage;
 		}
 		
-		log.debug("\u001B[31m"+currentPage+"<--getTestList currentPage");
-		log.debug("\u001B[31m"+rowPerPage+"<--getTestList rowPerPage");
-		log.debug("\u001B[31m"+searchWord+"<--getTestList searchWord");
-		
-		log.debug("\u001B[31m"+lastPage+"<--getTestList lastPage");
-		log.debug("\u001B[31m"+startPage+"<--getTestList startPage");
-		log.debug("\u001B[31m"+endPage+"<--getTestList endPage");
-		
-		
 		paramMap.put("beginRow", beginRow);
-		paramMap.put("currentPage", currentPage);
-		paramMap.put("rowPerPage", rowPerPage);
 		paramMap.put("startPage", startPage);
 		paramMap.put("endPage", endPage);
 		paramMap.put("lastPage", lastPage);
 		
+		return paramMap;
+	}
+	// 달력형 모두 출력
+	public List<Test> getTestList(){
+		List<Test> testList = testMapper.selectAllTestList();
+		
+		return testList;
+	}
+	
+	// testList 
+	public Map<String, Object> getTestList(int currentPage, int rowPerPage, String searchWord, String todayDate, String teacherId){
+		
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("searchWord", searchWord);
+		paramMap.put("todayDate", todayDate);
+		paramMap.put("teacherId", teacherId);
+		
+		// test 수 
+		Map<String, Object> map = this.getTestPaging(currentPage, rowPerPage, searchWord, todayDate, teacherId);
+		
+		log.debug("\u001B[31m"+currentPage+"<--getTestList currentPage");
+		log.debug("\u001B[31m"+rowPerPage+"<--getTestList rowPerPage");
+		log.debug("\u001B[31m"+searchWord+"<--getTestList searchWord");
+
 		List<Test> testList = testMapper.selectTestList(paramMap);
 		
 		paramMap.put("testList", testList);
+		paramMap.put("map", map);
 		
 		return paramMap;
 	}

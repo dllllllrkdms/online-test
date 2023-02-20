@@ -57,28 +57,39 @@
 						</div>		
 						<div class="row">
 							<div class="col-md-6">
-								<!-- 문제 & 보기 -->
-								<c:forEach var="q" items="${questionList}">
-									<c:if test="${q.questionIdx != 1 && q.questionIdx % 5 == 1 }">
-										</div>
+							
+								<form action="${pageContext.request.contextPath}/student/test/paper" method="post">
+									<input type="hidden" name="questionCount" value="${questionCount}">
+									<!-- 문제 & 객관식 보기 -->
+									<c:forEach var="q" items="${questionList}" varStatus="m">
+										<c:if test="${q.questionIdx != 1 && q.questionIdx % 5 == 1 }">
+											</div>
+											
+											<div class="col-md-6">
+										</c:if>
 										
-										<div class="col-md-6">
-									</c:if>
-									<table class="mb-3 table table-borderless ">
-										<tr style="border-bottom: 1px solid gray">
-											<th style="width: 10%">${q.questionIdx}.</th>
-											<th>${q.questionTitle}</th>
-										</tr>
-										<c:forEach var="e" items="${exampleList}" varStatus="s">
-											<c:if test="${q.questionNo == e.questionNo}">
-												<tr>
-													<td><input type="radio" id="answer${s.index}" value="${e.exampleIdx}">${e.exampleIdx}.</td>
-													<td><label for="answer${s.index}">${e.exampleTitle}</label></td>
-												</tr>
-											</c:if>		
-										</c:forEach>
-									</table>
-								</c:forEach>
+										<table class="mb-3 table table-borderless">
+											<tr style="border-bottom: 1px solid gray">
+												<td>${q.questionIdx}.</td>
+												<td>${q.questionTitle}</td>
+											</tr>
+											<c:forEach var="e" items="${exampleList}" varStatus="n">
+												<c:if test="${q.questionNo == e.questionNo}">
+													<tr>
+														<td>
+															<input type="hidden" name="paperList[${m.index}].questionNo" value="${e.questionNo}">
+															<input type="radio" name="paperList[${m.index}].answer" value="${e.exampleIdx}" id="answer${n.index}">
+															<label for="answer${n.index}">${e.exampleIdx}. ${e.exampleTitle}</label>
+														</td>
+													</tr>
+												</c:if>
+											</c:forEach>
+										</table>
+									</c:forEach>
+									
+									<button type="submit">제출하기</button>
+									
+								</form>
 								
 							</div>
 						
@@ -90,41 +101,6 @@
 	</div>
 	
 	<script src="${pageContext.request.contextPath}/resources/assets/static/js/app.js"></script>
-	
-	<!-- 시험 제목 -->
-	<table>
-		<tr>
-			<th>시험 제목</th>
-			<td>${test.testTitle}</td>
-		</tr>
-		<tr>
-			<th>시행 일시</th>
-			<td>${test.testDate}</td>
-		</tr>
-	</table>
-	<form action="${pageContext.request.contextPath}/student/test/paper" method="post">
-		<!-- 문제 & 객관식 보기 -->
-		<c:forEach var="q" items="${questionList}" varStatus="m">
-			<table>
-				<tr>
-					<td>${q.questionIdx}.</td>
-					<td>${q.questionTitle}</td>
-				</tr>
-				<c:forEach var="e" items="${exampleList}" varStatus="n">
-					<c:if test="${q.questionNo == e.questionNo}">
-						<tr>
-							<td>
-								<input type="hidden" name="paperList[${m.index}].questionNo" value="${e.questionNo}">
-								<input type="radio" name="paperList[${m.index}].answer" value="${e.exampleIdx}" id="answer${n.index}">
-								<label for="answer${n.index}">${e.exampleIdx}. ${e.exampleTitle}</label>
-							</td>
-						</tr>
-					</c:if>
-				</c:forEach>
-			</table>
-		</c:forEach>
-		<button type="submit">제출하기</button>
-	</form>
-	
+
 </body>
 </html>

@@ -17,6 +17,7 @@ public interface TestMapper {
 	int updateTest(Test test);
 	int insertTest(Test test);
 	int selectTestCount(Map<String, Object> paramMap);
+	List<Test> selectAllTestList();
 	List<Test> selectTodayTestList(Map<String, Object> paramMap);
 	List<Test> selectPastTestList(Map<String, Object> paramMap);
 	List<Test> selectTestList(Map<String, Object> paramMap);

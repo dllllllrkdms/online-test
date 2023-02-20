@@ -71,15 +71,30 @@ public class PaperController {
 	}
 	
 	// 답안 입력
+	@GetMapping("/student/test/paper")
+	public String addPaper(Model model, @RequestParam(value="testNo", required=true) int testNo) {
+		
+		Test test = testService.getTestOne(testNo);
+		List<Question> questionList = questionService.getQuestionList(testNo);
+		List<Example> exampleList = exampleService.getExampleList(testNo);
+		int questionCount = questionService.getQuestionCount(testNo);
+			
+		model.addAttribute("questionList", questionList);
+		model.addAttribute("exampleList", exampleList);
+		model.addAttribute("test", test);
+		model.addAttribute("questionCount", questionCount);
+		
+		return "test/paper";
+	}
 	@PostMapping("/student/test/paper")
-	public String addPaper(HttpSession session, Paper paper) {
+	public String addPaper(HttpSession session, Paper paper, @RequestParam(value="questionCount", required=true) int questionCount) {
 		Student loginStudent = (Student)session.getAttribute("loginStudent");
 		
 		int row = paperService.addPaper(loginStudent.getStudentNo(), paper);
 		log.debug("\u001B[31m"+row+"<-- addPaper row");
 		
-		String returnUrl = "redirect:/student/test/testList";
-		if(row != 2) { // 문항 수만큼 답
+		String returnUrl = "redirect:/student/test/myTestList";
+		if(row != questionCount) { // 문항 수만큼 답
 			returnUrl = "redirect:/student/test/paper";
 		}
 		return returnUrl;

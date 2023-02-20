@@ -145,4 +145,13 @@
 		ORDER BY test_date DESC
 		LIMIT #{beginRow}, #{rowPerPage};
 	</select>
+	
+	<!-- 모든 시험 출력 -->
+	<select id="selectAllTestList" resultType="goodee.gdj58.online.vo.Test" parameterType="java.util.Map">
+		SELECT test_no testNo
+			, test_title testTitle
+			, test_date testDate
+			, teacher_id teacherId
+		FROM test
+	</select>
 </mapper>

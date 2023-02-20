@@ -14,8 +14,6 @@
 			<li class="sidebar-item"><a class="sidebar-link" href="${pageContext.request.contextPath}/student/test/myTestList"><i class="align-middle me-2" data-feather="arrow-right"></i>점수 확인</a></li>
 			<li class="sidebar-item"><a class="sidebar-link" href="dashboard-ecommerce.html"><i class="align-middle me-2" data-feather="arrow-right"></i>성적 통계
 					<span class="sidebar-badge badge bg-primary">Pro</span></a></li>
-			<li class="sidebar-item"><a class="sidebar-link" href="dashboard-crypto.html">Crypto <span
-						class="sidebar-badge badge bg-primary">Pro</span></a></li>
 		</ul>
 	</li>
 	
@@ -24,7 +22,7 @@
 	</li>
 	
 	<li class="sidebar-item">
-		<a class="sidebar-link" href="${pageContext.request.contextPath}/student/test/testList">
+		<a class="sidebar-link" href="${pageContext.request.contextPath}/student/test/pastTestList">
 	    	<i class="align-middle" data-feather="user"></i> <span class="align-middle">지난 시험 보기</span>
 	    </a>
 	</li>
