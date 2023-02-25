@@ -15,7 +15,7 @@ public class MainController {
 
 	// calendar
 	@GetMapping("/{path:^student$|^teacher$|^employee$}/calendar")
-	public String calendar() {
+	public String calendar(@PathVariable String path) {
 		return "calendar";
 	}
 	

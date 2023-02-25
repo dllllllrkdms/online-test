@@ -90,7 +90,7 @@
 												<th>번호</th>
 												<th>제목</th>
 												<th class="d-none d-xl-table-cell">시험일</th>
-												<td>&nbsp;</td>
+												<th>&nbsp;</th>
 											</tr>
 										</thead>
 										<!-- test List -->
@@ -143,11 +143,12 @@
 															        	<button type="button" id="modifyTestFormBtn" class="btn btn-primary">등록</button>
 															          	<button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
 															        </div>
-															        
 														      </div>
 														      
+														      
 														    </div>
-														</div>													
+														</div>	
+																										
 													</td>
 												</tr>
 											</c:forEach>

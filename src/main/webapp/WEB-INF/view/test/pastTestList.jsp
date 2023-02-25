@@ -53,6 +53,7 @@
 											<!-- 강사 기능 : 시험 추가 -->
 											<c:if test="${loginTeacher != null}">
 												<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addTest">시험 등록하기</button>
+												<a href="${pageContext.request.contextPath}/teacher/test/pastTestList?teacherId=${loginTeacher.teacherId}" class="btn btn-sm btn-secondary">내 시험 관리</a>
 											</c:if>
 										</div>
 									</div>

@@ -67,7 +67,21 @@
 		);
 	</insert>
 	
-	<!-- 시험 개수 -->
+	<!-- 지난 시험 개수 -->
+	<select id="selectPastTestCount" resultType="Integer" parameterType="java.util.Map">
+		SELECT COUNT(*)
+		FROM test
+		<where>
+			<if test="searchWord != null and searchWord != '' ">
+				test_title LIKE CONCAT('%',#{searchWord},'%')
+			</if>
+			<if test="todayDate != null and todayDate != '' ">
+				AND test_date <![CDATA[<]]> #{todayDate} 
+			</if>
+		</where>
+	</select>
+	
+	<!-- 예정 시험 개수 -->
 	<select id="selectTestCount" resultType="Integer" parameterType="java.util.Map">
 		SELECT COUNT(*)
 		FROM test
@@ -76,7 +90,7 @@
 				test_title LIKE CONCAT('%',#{searchWord},'%')
 			</if>
 			<if test="todayDate != null and todayDate != '' ">
-				AND test_date <![CDATA[<=]]> #{todayDate} 
+				AND test_date <![CDATA[>]]> #{todayDate} 
 			</if>
 		</where>
 	</select>
@@ -103,27 +117,6 @@
 		LIMIT #{beginRow}, #{rowPerPage};
 	</select>
 	
-	<!-- 오늘 시험 출력 -->
-	<select id="selectTodayTestList" resultType="goodee.gdj58.online.vo.Test" parameterType="java.util.Map">
-		SELECT test_no testNo
-			, test_title testTitle
-			, test_date testDate
-			, teacher_id teacherId
-		FROM test
-		<where>
-			<if test="teacherId != null and teacherId != '' ">
-				AND teacher_id LIKE CONCAT(#{teacherId})
-			</if>
-			<if test="searchWord != null and searchWord != '' ">
-				AND test_title LIKE CONCAT('%',#{searchWord},'%')
-			</if>
-			<if test="todayDate != null and todayDate != '' ">
-				AND test_date = #{todayDate} 
-			</if>
-		</where>
-		LIMIT #{beginRow}, #{rowPerPage};
-	</select>
-
 	<!-- 예정 시험 출력 -->
 	<select id="selectTestList" resultType="goodee.gdj58.online.vo.Test" parameterType="java.util.Map">
 		SELECT test_no testNo
@@ -143,15 +136,9 @@
 			</if>
 		</where>
 		ORDER BY test_date DESC
-		LIMIT #{beginRow}, #{rowPerPage};
+		<if test="currentPage != null and rowPerPage != null">
+			LIMIT #{beginRow}, #{rowPerPage};
+		</if>
 	</select>
-	
-	<!-- 모든 시험 출력 -->
-	<select id="selectAllTestList" resultType="goodee.gdj58.online.vo.Test" parameterType="java.util.Map">
-		SELECT test_no testNo
-			, test_title testTitle
-			, test_date testDate
-			, teacher_id teacherId
-		FROM test
-	</select>
+
 </mapper>
