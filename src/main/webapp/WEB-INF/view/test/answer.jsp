@@ -37,7 +37,7 @@
 					
 					<div class="col-md-8">
 						<div class="row">
-						
+							
 							<!-- 시험 제목 -->
 							<table class="mb-3">
 								<tr>
@@ -56,46 +56,13 @@
 							
 						</div>		
 						<div class="row">
-							<div class="col-md-6">
-							
-								<form action="${pageContext.request.contextPath}/student/test/paper" method="post" id="addForm">
-									<input type="hidden" name="testNo" value="${test.testNo}">
-									<input type="hidden" name="questionCount" value="${questionCount}">
-									<!-- 문제 & 객관식 보기 -->
-									<c:forEach var="q" items="${questionList}" varStatus="m">
-										<c:if test="${q.questionIdx != 1 && q.questionIdx % 5 == 1 }">
-											</div>
-											
-											<div class="col-md-6">
-										</c:if>
-										
-										<table class="mb-3 table table-borderless">
-											<tr style="border-bottom: 1px solid gray">
-												<td>${q.questionIdx}.</td>
-												<td>${q.questionTitle}</td>
-											</tr>
-											<c:forEach var="e" items="${exampleList}" varStatus="n">
-												<c:if test="${q.questionNo == e.questionNo}">
-													<tr>
-														<td colspan="2">
-															<input type="hidden" name="paperList[${m.index}].questionNo" value="${e.questionNo}">
-															<input type="radio" name="paperList[${m.index}].answer" value="${e.exampleIdx}" id="answer${n.index}">
-															<label for="answer${n.index}">${e.exampleIdx}. ${e.exampleTitle}</label>
-														</td>
-													</tr>
-												</c:if>
-											</c:forEach>
-										</table>
-									</c:forEach>
-									
-									<div class="text-center">
-										<button type="button" id="submitBtn" class="btn btn-primary">등록</button>
-									</div>
-									
-								</form>
-								
-							</div>
-						
+							<table>
+								<c:forEach var="e" items="${exampleList}">
+									<tr>
+										<td>${e.questionIdx}번 정답 : ${e.exampleIdx}</td>
+									</tr>
+								</c:forEach>
+							</table>
 						</div>
 					</div>
 				</div>
@@ -104,22 +71,6 @@
 	</div>
 	
 	<script src="${pageContext.request.contextPath}/resources/assets/static/js/app.js"></script>
-	
-	<!-- 보기 입력 확인 -->
-	<script>
-		let questionCount = $('input[name="questionCount"]').val();
-		$('#submitBtn').click(function(){
-			for(let i=0; i<questionCount; i++){
-				console.log(i);
-				let inputName = 'input[name="paperList['+i+'].answer"]:checked';
-				if(!($(inputName).is(':checked'))){
-					alert('답안을 모두 선택하세요.');
-					return;
-				}
-			}
-			
-			$('#addForm').submit();
-		});
-	</script>
+
 </body>
 </html>

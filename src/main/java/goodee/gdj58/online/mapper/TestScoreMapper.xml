@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="goodee.gdj58.online.mapper.TestScoreMapper">
+	
+	<!-- 평균 카운트 -->
+	<select id="selectAvgCount" resultType="Integer" parameterType="java.util.Map">
+		SELECT COUNT(*)
+		FROM (
+			SELECT 
+				test_title testTitle
+				, AVG(score) avg 
+				, COUNT(*) cnt
+			FROM test_score ts
+			INNER JOIN test t 
+			ON ts.test_no = t.test_no
+			WHERE teacher_id = #{teacherId}
+			GROUP BY ts.test_no) t
+		
+	</select>
+	
+	<!-- 강사 등록한 시험 평균 확인 -->
+	<select id="selectAvgByTest" resultType="java.util.Map" parameterType="goodee.gdj58.online.vo.Page">
+		SELECT 
+			test_title testTitle
+			, AVG(score) avg 
+			, COUNT(*) countStudent
+		FROM test_score ts
+		INNER JOIN test t 
+		ON ts.test_no = t.test_no
+		WHERE teacher_id = #{map.teacherId}
+		GROUP BY ts.test_no
+		ORDER BY test_date DESC
+		LIMIT #{beginRow}, #{rowPerPage}
+	</select>
+	
+	<!-- 학생이 응시한 시험 수 -->
+	<select id="selectTestCountByStudent" resultType="Integer" parameterType="java.util.Map">
+		SELECT COUNT(*) AS count
+		FROM test_score 
+		<where>
+			student_no = #{studentNo}
+			<if test="searchWord != null and searchWord != '' ">
+				test_title LIKE CONCAT('%',#{searchWord},'%')
+			</if>
+		</where>
+	</select>
+		
+	<!-- 학생이 시험을 응시 여부 확인 -->
+	<select id="paperCheckByStudent" resultType="goodee.gdj58.online.vo.TestScore" parameterType="goodee.gdj58.online.vo.TestScore">
+		SELECT 
+			test_no testNo
+			, student_no studentNo
+			, score
+		FROM test_score 
+		WHERE student_no = #{studentNo}
+		AND test_no = #{testNo}
+	</select>	
+	
+	<!-- 학생이 응시한 시험과 점수 목록 -->
+	<select id="selectTestScoreList" resultType="java.util.Map" parameterType="goodee.gdj58.online.vo.Page">
+		SELECT 
+			ts.test_no testNo
+			, t.test_title testTitle
+			, t.test_date testDate
+			, ts.student_no studentNo
+			, ts.score 
+		FROM test_score ts
+		INNER JOIN test t 
+		ON ts.test_no = t.test_no
+		<where>
+			ts.student_no = #{map.studentNo}
+			
+			<if test="map.searchWord != null and map.searchWord != '' ">
+				test_title LIKE CONCAT('%',#{map.searchWord},'%')
+			</if>
+		</where>
+		ORDER BY test_date DESC
+		LIMIT #{beginRow}, #{rowPerPage};
+	</select>
+	
+	<!-- 계산된 점수 입력 -->
+	<insert id="insertScore" parameterType="goodee.gdj58.online.vo.TestScore">
+		INSERT INTO test_score(
+			test_no
+			, student_no
+			, score
+		) VALUES(
+			#{testNo}
+			, #{studentNo}
+			, #{score}
+		)
+	</insert>
+</mapper>

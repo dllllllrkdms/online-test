@@ -24,45 +24,59 @@ public class QuestionService {
 		return questionMapper.selectQuestionCount(testNo);
 	}
 	
-	// 삭제 트랜잭션 - 보기 처리 필요
-	public int removeQuestion(int questionNo) {
-		return questionMapper.deleteQuestion(questionNo);
-	}
-	
-	// 문제 수정
+	// 문제 수정 : 삭제 후 입력
 	public int modifyQuestion(Question question, Example example) {
-		
-		int row = questionMapper.updateQuestion(question);
-		
 		List<Example> exampleList = example.getExampleList();
-		log.debug("\u001B[31m"+exampleList+"<-- addQuestion exampleList");
+		log.debug("\u001B[31m"+example+"<-- modifyQuestion example");
 		
+		// 1. 보기 삭제 
+		int row = exampleService.removeExample(question.getQuestionNo());
+		
+		// 2. 문제 수정
+		row = questionMapper.updateQuestion(question);
+		
+		// 3. 보기 입력
+		int exampleIdx = 1; // 보기 인덱스
 		for(Example e : exampleList) {
-			row += exampleService.modifyExample(e);
+			e.setExampleIdx(exampleIdx);
+			e.setQuestionNo(question.getQuestionNo());
+			if(e.getExampleOx() == null) {
+				e.setExampleOx("오답");
+			}
+			
+			row += exampleService.addExample(e);
+			exampleIdx++;
 		}
-		
 		return row; 
 	}
 	
-	// 상세보기
+	// 문제, 보기상세보기
 	public Question getQuestion(int questionNo) {
 		return questionMapper.selectQuestion(questionNo);
 	}
 	
-	// 문제 추가
+	// 문제, 보기 추가
 	public int addQuestion(Question question, Example example) {
 		List<Example> exampleList = example.getExampleList();
 		log.debug("\u001B[31m"+example+"<-- addQuestion example");
 		
+		// 1. 문제 추가
 		int row = questionMapper.insertQuestion(question);
 		
-		int questionNo = question.getQuestionNo();
-		
+		int questionNo = question.getQuestionNo(); // insert 시 pk값 받아오기
 		log.debug("\u001B[31m"+questionNo+"<-- addQuestion questionNo");
 		
+		// 보기 추가
+		int exampleIdx = 1; // 보기 인덱스
 		for(Example e : exampleList) {
+			e.setExampleIdx(exampleIdx);
 			e.setQuestionNo(questionNo);
+			if(e.getExampleOx() == null) {
+				e.setExampleOx("오답");
+			}
+			
 			row += exampleService.addExample(e);
+			exampleIdx++;
 		}
 		return row;
 	}

@@ -50,10 +50,10 @@
 									</div>
 									<form action="${pageContext.request.contextPath}/loginEmp" method="post" id="form">
 										<div class="mb-3">
-											<input class="form-control form-control-lg" type="text" id="empId" name="empId" placeholder="아이디">
+											<input class="form-control form-control-lg" type="text" id="empId" name="empId" placeholder="아이디" value="empOne">
 										</div>
 										<div class="mb-3">
-											<input class="form-control form-control-lg" type="password" id="empPw" name="empPw" placeholder="비밀번호">
+											<input class="form-control form-control-lg" type="password" id="empPw" name="empPw" placeholder="비밀번호" value="1234">
 										</div>
 										<div class="">
 											<div class="msg">${msg}</div>

@@ -47,7 +47,7 @@
 									
 									<div class="col-12 mt-3">
 										<!-- 문제 추가 -->
-										<form action="${pageContext.request.contextPath}/teacher/test/addQuestion" method="post">
+										<form id="addForm">
 											
 											<input type="hidden" name="testNo" value="${testNo}">
 											<table class="table">
@@ -57,26 +57,23 @@
 												</tr>
 												<tr>
 													<th>문제 내용</th>
-													<td><textarea class="form-control" cols="50" rows="5" name="questionTitle"></textarea></td>
+													<td><textarea class="form-control" cols="50" rows="5" name="questionTitle" id="questionTitle"></textarea></td>
 												</tr>
 											</table>
-											
-											<table class="table">
-												<c:forEach var="e" begin="0" end="4">
-													<tr>
-														<td style="width: 20%">
-															<input class="form-control" type="number" name="exampleList[${e}].exampleIdx" value="${e+1}" readonly="readonly">
-														</td>
-														<td><input class="form-control" type="text" name="exampleList[${e}].exampleTitle"></td>
-														<td>
-															<input class="exampleO form-check-input" type="radio" name="exampleList[${e}].exampleOx" value="정답">정답
-															<input class="exampleX form-check-input" type="radio" name="exampleList[${e}].exampleOx" value="오답">오답
-														</td>
-													</tr>
-												</c:forEach>
+											<div class="mb-3"><button type="button" id="addBtn" class="btn btn-primary">보기 추가</button></div>
+											<table class="table" id="exampleTable">
+												<tr class="exampleRow">
+													<td><input class="exampleTitle form-control" type="text"></td>
+													<td>
+														<input type="checkbox" class="exampleO form-check-input" value="정답">&nbsp;정답
+													</td>
+													<td style="width: 10%;">
+														<button type="button" class="removeBtn btn btn-secondary">x</button>
+													</td>
+												</tr>
 											</table>
 											<div class="text-center">
-												<button type="submit" class="btn btn-primary">추가</button>
+												<button type="button" id="submitBtn" class="btn btn-primary">등록</button>
 											</div>
 										</form>
 									</div>
@@ -91,21 +88,81 @@
 	</div>
 	
 	<script src="${pageContext.request.contextPath}/resources/assets/static/js/app.js"></script>
-
 	
+	<!-- 보기 추가 스크립트 -->
 	<script>
-		$('.exampleO').click(function(){
-			let checkIndex = $('.exampleO').index(this);
-			console.log(checkIndex+'클릭인덱스');
-			$('.exampleX').each(function(index, item){
-				
-				if( index != checkIndex){
-					console.log(index+'오답 인덱스');
-					$(item).attr('checked', true);
-				}
-			});	
+	 	$('#addBtn').on("click", function(){
+			let html = '<tr class="exampleRow">';
+			html += '<td><input class="exampleTitle form-control" type="text"></td>';
+			html += '<td>';
+			html += '<input type="checkbox" class="exampleO form-check-input" value="정답">&nbsp;정답';
+			html += '</td>';
+			html += '<td><button type="button" class="removeBtn btn btn-secondary">x</button></td>';
+			html += '</tr>';
+			$('#exampleTable').append(html);
 		});
 	</script>
-
+	
+	<!-- 보기 삭제 스크립트 -->
+	<script>
+		$(document).on('click', '.removeBtn', function() {
+			var idx = $('.removeBtn').index(this);
+			$('.exampleRow').eq(idx).remove();
+			console.log(idx);
+		});
+	</script>
+	
+	<!-- 유효성 검사 스크립트 -->
+	<script>
+		$('#submitBtn').click(function(){
+			let exampleRowCnt = $('#exampleTable tr').length;
+			
+			
+			if($('#questionTitle').val().length == 0){
+				alert('문제를 입력해주세요.');
+				$('#questionTitle').focus();
+				return;
+			}
+			
+			if($('#questionTitle').val().length == 0){
+				alert('문제를 입력해주세요.');
+				$('#questionTitle').focus();
+				return;
+			}
+			
+			$('.exampleTitle').each(function(index, item){
+				if($(this).val().length == 0){
+					alert('보기를 입력해주세요.');
+					$(this).focus();
+					return;
+				}
+			});
+			
+			if($('.exampleO:checked').length == 0){
+				alert('정답을 하나 이상 선택해주세요');
+				return;
+			}
+			
+			let exampleRow = 0;
+			$('.exampleTitle').each(function(index, item){
+				let name = 'exampleList['+exampleRow+'].exampleTitle';
+				$($('.exampleTitle')[index]).attr('name', name);
+				exampleRow++;
+			});
+			
+			exampleRow = 0;
+			$('.exampleO').each(function(index, item){
+				let name = 'exampleList['+exampleRow+'].exampleOx';
+				$($('.exampleO')[index]).attr('name', name);
+				exampleRow++;
+			});
+			
+			$('#addForm').serialize();
+			$('#addForm').attr('method', 'POST');
+			$('#addForm').attr('action', '/online-test/teacher/test/addQuestion');
+			$('#addForm').submit();
+		});
+	</script>
+	
 </body>
 </html>

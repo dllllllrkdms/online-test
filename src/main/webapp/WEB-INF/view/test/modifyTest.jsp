@@ -21,9 +21,10 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 	<link href="${pageContext.request.contextPath}/resources/assets/custom/mainStyle.css" rel="stylesheet">
 
-<title>시험 수정 | LMS</title>
+<title>문제 관리 | LMS</title>
 </head>
 <body>
+	<input type="hidden" value="${msg}" id="msg">
 	<div class="wrapper">
 	
 		<c:import url="/WEB-INF/view/inc/sideBar.jsp"></c:import> <!-- JSTL로 include하기 -->
@@ -52,8 +53,9 @@
 										</table>
 										
 									<hr>
-									<div class="mb-3"><a class="btn btn-primary" href="${pageContext.request.contextPath}/teacher/test/addQuestion?testNo=${test.testNo}">문제 추가</a></div>
-							
+									<div class="mb-3">
+										<a class="btn btn-primary" href="${pageContext.request.contextPath}/teacher/test/addQuestion?testNo=${test.testNo}">문제 추가</a>
+									</div>
 									<table class="table">
 										<tr>
 											<th>번호</th>
@@ -83,6 +85,12 @@
 	</div>
 
 	<script src="${pageContext.request.contextPath}/resources/assets/static/js/app.js"></script>
+<!-- msg 스크립트 -->	
+<script>
+	if($('#msg').val() != null && $('#msg').val().length != 0 ){
+		alert($('#msg').val());
+	}
+</script>
 	
 </body>
 </html>

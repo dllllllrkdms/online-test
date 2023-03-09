@@ -53,7 +53,7 @@
 											<!-- 강사 기능 : 시험 추가 -->
 											<c:if test="${loginTeacher != null}">
 												<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addTest">시험 등록하기</button>
-												<a href="${pageContext.request.contextPath}/teacher/test/pastTestList?teacherId=${loginTeacher.teacherId}" class="btn btn-sm btn-secondary">내 시험 관리</a>
+												<a href="${pageContext.request.contextPath}/teacher/test/pastTestList?teacherId=${loginTeacher.teacherId}" class="btn btn-sm btn-secondary">내 시험 보기</a>
 											</c:if>
 										</div>
 									</div>
@@ -109,10 +109,10 @@
 										<div class="col-sm-12 col-md-6">
 											<select id="rowPerPage" class="form-select form-select-sm mb-3">
 												<c:forEach var="r" begin="5" end="15" step="5">
-													<c:if test="${map.rowPerPage == r}">
+													<c:if test="${page.rowPerPage == r}">
 														<option value="${r}" selected="selected">${r}개씩</option>
 													</c:if>
-													<c:if test="${map.rowPerPage != r}">
+													<c:if test="${page.rowPerPage != r}">
 														<option value="${r}">${r}개씩</option>
 													</c:if>
 												</c:forEach>
@@ -124,7 +124,7 @@
 											<form action="${pageContext.request.contextPath}/${path}/test/pastTestList" method="get" id="searchForm">
 												<input type="hidden" name="rowPerPage">
 												<label>
-													<input type="text" name="searchWord" class="form-control form-control-sm" value="${map.searchWord}" placeholder="제목을 검색해주세요.">
+													<input type="text" name="searchWord" class="form-control form-control-sm" value="${page.map.searchWord}" placeholder="제목을 검색해주세요.">
 												</label>
 												<button type="button" class="btn btn-sm btn-primary" id="searchBtn">검색</button>
 											</form>
@@ -138,12 +138,12 @@
 												<th>번호</th>
 												<th>제목</th>
 												<th class="d-none d-xl-table-cell">시험일</th>
-												<td>&nbsp;</td>
+												<td colspan="2">&nbsp;</td>
 											</tr>
 										</thead>
 										<!-- test List -->
 										<tbody id="list">
-											<c:forEach var="t" items="${map.testList}">
+											<c:forEach var="t" items="${testList}">
 												<tr>
 													<td>${t.testNo}</td>
 													<td class="title"><a href="${pageContext.request.contextPath}/${path}/test/testOne?testNo=${t.testNo}">${t.testTitle}</a></td>
@@ -154,6 +154,7 @@
 														</c:if>
 														
 													</td>
+													<td><a href="${pageContext.request.contextPath}/${path}/paper?testNo=${t.testNo}">답지</a></td>
 												</tr>
 											</c:forEach>
 										</tbody>
@@ -164,18 +165,24 @@
 										<div class="pagination">
 											<div class="mb-4">
 												<div class="btn-group me-2" role="group" aria-label="First group">
-													<a class="btn" href="${pageContext.request.contextPath}/${path}/test/pastTestList?currentPage=1&searchWord=${map.searchWord}&rowPerPage=${map.rowPerPage}">처음으로</a>
-													<a class="btn" href="${pageContext.request.contextPath}/${path}/test/pastTestList?currentPage=${map.startPage-1}&searchWord=${map.searchWord}&rowPerPage=${map.rowPerPage}">이전</a>
-													<c:forEach var="i" begin="${map.startPage}" end="${map.endPage}" step="1">
-														<c:if test="${map.currentPage == i}">
-															<a class="btn active" href="${pageContext.request.contextPath}/${path}/test/pastTestList?currentPage=${i}&searchWord=${map.searchWord}&rowPerPage=${map.rowPerPage}">${i}</a>
+													<c:if test="${page.prev}">
+														<a class="btn" href="${pageContext.request.contextPath}/${path}/test/pastTestList?currentPage=1&searchWord=${page.map.searchWord}&rowPerPage=${page.rowPerPage}">처음으로</a>
+														<a class="btn" href="${pageContext.request.contextPath}/${path}/test/pastTestList?currentPage=${page.startPage-1}&searchWord=${page.map.searchWord}&rowPerPage=${page.rowPerPage}">이전</a>
+													</c:if>
+													
+													<c:forEach var="i" begin="${page.startPage}" end="${page.endPage}" step="1">
+														<c:if test="${page.currentPage == i}">
+															<a class="btn active" href="${pageContext.request.contextPath}/${path}/test/pastTestList?currentPage=${i}&searchWord=${page.map.searchWord}&rowPerPage=${page.rowPerPage}">${i}</a>
 														</c:if>
-														<c:if test="${map.currentPage != i}">
-															<a class="btn" href="${pageContext.request.contextPath}/${path}/test/pastTestList?currentPage=${i}&searchWord=${map.searchWord}&rowPerPage=${map.rowPerPage}">${i}</a>
+														<c:if test="${page.currentPage != i}">
+															<a class="btn" href="${pageContext.request.contextPath}/${path}/test/pastTestList?currentPage=${i}&searchWord=${page.map.searchWord}&rowPerPage=${page.rowPerPage}">${i}</a>
 														</c:if>
 													</c:forEach>
-													<a class="btn" href="${pageContext.request.contextPath}/${path}/test/pastTestList?currentPage=${map.endPage+1}&searchWord=${map.searchWord}&rowPerPage=${map.rowPerPage}">다음</a>
-													<a class="btn" href="${pageContext.request.contextPath}/${path}/test/pastTestList?currentPage=${map.lastPage}&searchWord=${map.searchWord}&rowPerPage=${map.rowPerPage}">끝으로</a>
+													
+													<c:if test="${page.next}">
+														<a class="btn" href="${pageContext.request.contextPath}/${path}/test/pastTestList?currentPage=${page.endPage+1}&searchWord=${page.map.searchWord}&rowPerPage=${page.rowPerPage}">다음</a>
+														<a class="btn" href="${pageContext.request.contextPath}/${path}/test/pastTestList?currentPage=${page.lastPage}&searchWord=${page.map.searchWord}&rowPerPage=${page.rowPerPage}">끝으로</a>
+													</c:if>
 												</div>												
 											</div>
 										</div>

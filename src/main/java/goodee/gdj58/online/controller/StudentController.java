@@ -37,11 +37,7 @@ public class StudentController {
 		// 아이디 중복확인 
 		String idCheck = idService.getIdCheck(student.getStudentId());
 		log.debug("\u001B[31m"+idCheck+"<-- addStudent idCheck");
-		
-		if(idCheck!=null) {
-			rttr.addFlashAttribute("msg", "중복된 아이디입니다.");
-			return "redirect:/addStudent";
-		}
+
 		int row = studentService.addStudent(student);
 		log.debug("\u001B[31m"+row+"<-- addStudent row");
 		
@@ -52,7 +48,7 @@ public class StudentController {
 			returnUrl = "redirect:/loginStudent";
 		}
 		
-		rttr.addFlashAttribute("msg", msg);
+		rttr.addFlashAttribute("loginMsg", msg);
 		return returnUrl; 
 	}
 	

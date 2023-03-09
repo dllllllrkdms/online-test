@@ -21,11 +21,12 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 	<link href="${pageContext.request.contextPath}/resources/assets/custom/mainStyle.css" rel="stylesheet">
 	
-<title>시험 | LMS</title>
+<title>성적 | LMS</title>
 </head>
 <body>
 	<input type="hidden" id="msg" value="${msg}">
-
+	
+	
 	<div class="wrapper">
 	
 		<c:import url="/WEB-INF/view/inc/sideBar.jsp"></c:import> <!-- JSTL로 include하기 -->
@@ -35,68 +36,73 @@
 			
 			<main class="content">
 				<div class="container-fluid p-0">
-					
-					<div class="col-md-8">
-						<div class="row">
-						
-							<!-- 시험 제목 -->
-							<table class="mb-3">
-								<tr>
-									<th>시험 제목</th>
-									<td>${test.testTitle}</td>
-								</tr>
-								<tr>
-									<th>시행 일시</th>
-									<td>${test.testDate}</td>
-								</tr>
-								<tr>
-									<th>총 문항 수</th>
-									<td>${questionCount}</td>
-								</tr>
-							</table>
-						</div>		
-						<div class="row">
-							<div class="col-md-6">
-								<!-- 문제 & 보기 -->
-								<c:forEach var="q" items="${questionList}">
-									<c:if test="${q.questionIdx != 1 && q.questionIdx % 5 == 1 }">
-										</div>
-										
-										<div class="col-md-6">
-									</c:if>
-									<table class="mb-3 table table-borderless ">
-										<tr style="border-bottom: 1px solid gray">
-											<th style="width: 10%">${q.questionIdx}.</th>
-											<th>${q.questionTitle}</th>
-										</tr>
-										<c:forEach var="e" items="${exampleList}">
-											<c:if test="${q.questionNo == e.questionNo}">
-												<tr>
-													<td>${e.exampleIdx}.</td>
-													<td>${e.exampleTitle}</td>
-												</tr>
-											</c:if>		
-										</c:forEach>
-									</table>
-								</c:forEach>
-								
-							</div>
-						
-						</div>
+				
+					<div class="mb-3">
+						<h1 class="h3 d-inline align-middle">마이 페이지</h1>
 					</div>
+					
+						
+						<div class="col-12">
+							<div class="card">
+								<div class="card-header">
+									<h5 class="card-title mb-0">성적</h5>
+								</div>
+								
+								<div class="card-body">
+									<canvas id="myChart" style="width:100%;max-width:700px"></canvas>
+								</div>
+							</div>
+						</div>
+						
 				</div>
 			</main>
 		</div>
 	</div>
-	
-	<script src="${pageContext.request.contextPath}/resources/assets/static/js/app.js"></script>
-	
-	<script>
-		if($('#msg').val() != null && $('#msg').val() != ''){
-			alert($('#msg').val());
-		}
-	</script>
 		
+	<script src="${pageContext.request.contextPath}/resources/assets/static/js/app.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 	
-</body>
+	<!-- ajax로 모델 가져오기 -->
+	<script>
+		let xModel = [];
+		let yModel = [];
+		$.ajax({
+			async : false // 동기처리
+			, url : '/online-test/student/score'
+			, type : 'post'
+			, success : function(model){
+				for(let attr in model){ 
+					xModel.push(model[attr].testTitle);
+					yModel.push(model[attr].score);
+				}
+			}
+		});
+		console.log(xModel);
+		console.log(yModel);
+	</script>
+	
+	<!-- 차트 그리기 스크립트 -->
+	<script>
+
+		new Chart("myChart", {
+		  type: "line",
+		  data: {
+		    labels: xModel,
+		    datasets: [{
+		      backgroundColor: "rgba(0,0,0,1.0)",
+		      borderColor: "rgba(0,0,0,0.1)",
+		      data: yModel
+		    }]
+		  },
+		  options:{
+			  legend: {display: false},
+			    scales: {
+			      yAxes: [{ticks: {min: 0, max: 100}}],
+			    }
+		  }
+		});
+
+
+	</script>	
+</body>					
 </html>

@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Service
 public class DateCompare {
 	
@@ -18,10 +17,6 @@ public class DateCompare {
 		// LocalDate 기본 포맷 : yyyy-MM-dd
 		LocalDate todayDate = LocalDate.now();
 		LocalDate resultDate = todayDate.plusDays(dateGap);
-		
-		log.debug("\u001B[31m"+todayDate+"<-- getDate todayDate");
-		log.debug("\u001B[31m"+resultDate+"<-- getDate resultDate");
-		
 		return resultDate.toString();
 	}
 
@@ -34,13 +29,8 @@ public class DateCompare {
 		
 		// 비교 날짜 
 		LocalDate paramDate = LocalDate.parse(date, format);
-		
-		log.debug("\u001B[31m"+todayDate+"<-- todayCompare todayDate");
-		log.debug("\u001B[31m"+paramDate+"<-- todayCompare paramDate");
 
 		int result = todayDate.compareTo(paramDate);
-		
-		log.debug("\u001B[31m"+result+"<-- todayCompare result");
 		
 		return result; // 오늘 == 매개변수 날짜 : 0, 오늘<매개변수날짜 : 1, 오늘>매개변수날짜 : -1
 	}

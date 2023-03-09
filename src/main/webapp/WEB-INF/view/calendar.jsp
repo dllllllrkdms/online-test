@@ -44,6 +44,7 @@
 <title>Home | LMS</title>
 </head>
 <body>
+	<input type="hidden" value="${msg}" id="msg">
 	<div class="wrapper">
 	
 		<c:import url="/WEB-INF/view/inc/sideBar.jsp"></c:import> <!-- JSTL로 include하기 -->
@@ -94,7 +95,34 @@
 	
 	<script src="${pageContext.request.contextPath}/resources/assets/static/js/app.js"></script>
 	
+	<!-- 메시지 스크립트 -->
+	<script>
+		if($('#msg').val().length != 0){
+			alert($('#msg').val());
+		}
+	</script>
 	
+	<script>
+		$(document).on("click","#paperBtn",function(){
+			let testNo = $(this).val();
+			$.ajax({
+		   		 type:"get"
+		   		 , url:"/online-test/student/paperCheck"
+		   		 , data: {testNo: testNo}
+		   		 , success: function(model){
+		   			 console.log(model);
+		   			 if(model != null && model != ''){ // null : 응시 가능, not null : 응시 불가능 
+		   				alert('이미 응시한 시험입니다.');
+		   			 } else if(model == null || model == ''){
+		   				 location.href='/online-test/student/test/paper?testNo='+testNo;
+		   			 }
+		   		 }
+		   		 , error: function(){
+		   			 alert('시스템 에러. 다시 시도해주세요.');
+		   		 }
+			});	
+		});
+	</script>
 
 	<!-- full calendar 스크립트 -->
 	<script>
@@ -130,13 +158,10 @@
 	                	let todayDate = moment(today).format('YYYY-MM-DD');
 	                	
 	                	let itemDate = moment(info.event.start).format('YYYY-MM-DD'); // date format 설정
-	                	console.log(info.event.id);
-	                	console.log(todayDate+'<-- 오늘날짜');
-	                	console.log(itemDate+'<--이벤트 날짜');
 	                	
 	                	let html = itemDate+'<br><a href="${pageContext.request.contextPath}/${path}/test/testOne?testNo='+info.event.id+'" class="btn btn-sm btn-primary mt-3">상세보기</a>';
 	                	if(todayDate == itemDate){
-	                		html += '<br><a href="${pageContext.request.contextPath}/student/test/paper?testNo='+info.event.id+'" class="btn btn-sm btn-primary mt-3">응시하기</a>';
+	                		html += '<br><button type="button" value="'+info.event.id+'" class="btn btn-sm btn-primary mt-3" id="paperBtn">응시하기</button>';
 	                	}
 	                	$(".modal-title").html(info.event.title);
 	                	$('.modal-body').html(html);

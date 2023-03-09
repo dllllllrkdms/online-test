@@ -1,37 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="goodee.gdj58.online.mapper.TestMapper">
-	
-	<!-- 학생이 응시한 시험 수 -->
-	<select id="selectTestCountByStudent" resultType="java.util.Map" parameterType="java.util.Map">
-		SELECT t.test_no testNo
-			,COUNT(*) over(PARTITION BY t.test_no) as count
-		FROM question q
-		INNER JOIN paper p
-		ON p.question_no = q.question_no
-		INNER JOIN test t
-		ON t.test_no = q.test_no
-		WHERE p.student_no = ${studentNo}
-		GROUP BY t.test_no
-	</select>
-	
-	<!-- 학생이 응시한 시험 출력 -->
-	<select id="selectTestListByStudent" resultType="java.util.Map" parameterType="java.util.Map">
-		SELECT t.test_no testNo
-			, t.test_title testTitle
-			, t.test_date testDate
-			, t.teacher_id teacherId
-		FROM question q
-		INNER JOIN paper p
-		ON p.question_no = q.question_no
-		INNER JOIN test t
-		ON t.test_no = q.test_no
-		WHERE p.student_no = ${studentNo}
-		GROUP BY t.test_no
-		ORDER BY test_date DESC
-		LIMIT #{beginRow}, #{rowPerPage};
-	</select>
-	
+
 	<!-- 시험 삭제 -->
 	<delete id="deleteTest" parameterType="Integer">
 		DELETE FROM test
@@ -43,6 +13,7 @@
 		SELECT test_no testNo
 			, test_title testTitle
 			, test_date testDate
+			, teacher_id teacherId
 		FROM test
 		WHERE test_no = #{testNo}
 	</select>
@@ -51,6 +22,7 @@
 	<update id="updateTest" parameterType="goodee.gdj58.online.vo.Test">
 		UPDATE test
 		SET test_title = #{testTitle}
+			, test_date = #{testDate}
 		WHERE test_no = #{testNo}
 	</update>
 	
@@ -73,10 +45,13 @@
 		FROM test
 		<where>
 			<if test="searchWord != null and searchWord != '' ">
-				test_title LIKE CONCAT('%',#{searchWord},'%')
+				AND test_title LIKE CONCAT('%',#{searchWord},'%')
 			</if>
 			<if test="todayDate != null and todayDate != '' ">
 				AND test_date <![CDATA[<]]> #{todayDate} 
+			</if>
+			<if test="teacherId != null and teacherId != '' ">
+				AND teacher_id LIKE CONCAT(#{teacherId})
 			</if>
 		</where>
 	</select>
@@ -87,58 +62,70 @@
 		FROM test
 		<where>
 			<if test="searchWord != null and searchWord != '' ">
-				test_title LIKE CONCAT('%',#{searchWord},'%')
+				AND test_title LIKE CONCAT('%',#{searchWord},'%')
 			</if>
 			<if test="todayDate != null and todayDate != '' ">
 				AND test_date <![CDATA[>]]> #{todayDate} 
+			</if>
+			<if test="teacherId != null and teacherId != '' ">
+				AND teacher_id LIKE CONCAT(#{teacherId})
 			</if>
 		</where>
 	</select>
 	
 	<!-- 지난 시험 출력 -->
-	<select id="selectPastTestList" resultType="goodee.gdj58.online.vo.Test" parameterType="java.util.Map">
+	<select id="selectPastTestList" resultType="goodee.gdj58.online.vo.Test" parameterType="goodee.gdj58.online.vo.Page">
 		SELECT test_no testNo
 			, test_title testTitle
 			, test_date testDate
 			, teacher_id teacherId
 		FROM test
 		<where>
-			<if test="teacherId != null and teacherId != '' ">
-				AND teacher_id LIKE CONCAT(#{teacherId})
+			<if test="map.teacherId != null and map.teacherId != '' ">
+				AND teacher_id LIKE CONCAT(#{map.teacherId})
 			</if>
-			<if test="searchWord != null and searchWord != '' ">
-				AND test_title LIKE CONCAT('%',#{searchWord},'%')
+			<if test="map.searchWord != null and map.searchWord != '' ">
+				AND test_title LIKE CONCAT('%',#{map.searchWord},'%')
 			</if>
-			<if test="todayDate != null and todayDate != '' ">
-				AND test_date <![CDATA[<]]> #{todayDate} 
+			<if test="map.todayDate != null and map.todayDate != '' ">
+				AND test_date <![CDATA[<]]> #{map.todayDate} 
 			</if>
 		</where>
 		ORDER BY test_date DESC
 		LIMIT #{beginRow}, #{rowPerPage};
 	</select>
 	
-	<!-- 예정 시험 출력 -->
-	<select id="selectTestList" resultType="goodee.gdj58.online.vo.Test" parameterType="java.util.Map">
+	<!-- 시험 출력 -->
+	<select id="selectTestList" resultType="goodee.gdj58.online.vo.Test" parameterType="goodee.gdj58.online.vo.Page">
 		SELECT test_no testNo
 			, test_title testTitle
 			, test_date testDate
 			, teacher_id teacherId
 		FROM test
 		<where>
-			<if test="teacherId != null and teacherId != '' ">
-				AND teacher_id LIKE CONCAT(#{teacherId})
+			<if test="map.teacherId != null and map.teacherId != '' ">
+				AND teacher_id LIKE #{map.teacherId}
 			</if>
-			<if test="searchWord != null and searchWord != '' ">
-				AND test_title LIKE CONCAT('%',#{searchWord},'%')
+			<if test="map.searchWord != null and map.searchWord != '' ">
+				AND test_title LIKE CONCAT('%',#{map.searchWord},'%')
 			</if>
-			<if test="todayDate != null and todayDate != '' ">
-				AND test_date <![CDATA[>]]> #{todayDate} 
+			<if test="map.todayDate != null and map.todayDate != '' ">
+				AND test_date <![CDATA[>]]> #{map.todayDate} 
 			</if>
 		</where>
 		ORDER BY test_date DESC
 		<if test="currentPage != null and rowPerPage != null">
 			LIMIT #{beginRow}, #{rowPerPage};
 		</if>
+	</select>
+	
+	<!-- 시험 모두 출력 -->
+	<select id="selectAllTestList" resultType="goodee.gdj58.online.vo.Test">
+		SELECT test_no testNo
+			, test_title testTitle
+			, test_date testDate
+			, teacher_id teacherId
+		FROM test
 	</select>
 
 </mapper>

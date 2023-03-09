@@ -42,7 +42,7 @@
 									
 									<div class="col-12 mt-3">
 										<!-- 문제 수정 -->
-										<form action="${pageContext.request.contextPath}/teacher/test/modifyQuestion" method="post">
+										<form id="addForm">
 											<input type="hidden" name="questionNo" value="${question.questionNo}">
 											<input type="hidden" name="testNo" value="${question.testNo}">
 											<table class="table">
@@ -52,33 +52,33 @@
 												</tr>
 												<tr>
 													<th>문제 내용</th>
-													<td><textarea class="form-control" cols="50" rows="5" name="questionTitle">${question.questionTitle}</textarea></td>
+													<td><textarea class="form-control" cols="50" rows="5" name="questionTitle" id="questionTitle" >${question.questionTitle}</textarea></td>
 												</tr>
 											</table>
-											
-											<table class="table">
+											<div class="mb-3"><button type="button" id="addBtn" class="btn btn-primary">보기 추가</button></div>
+											<table class="table" id="exampleTable">
 												<c:forEach var="e" items="${exampleList}" varStatus="s">
-													<tr>
-														<td style="width: 20%">
-															<input type="hidden" name="exampleList[${s.index}].questionNo" value="${question.questionNo}">
-															<input type="hidden" name="exampleList[${s.index}].exampleNo" value="${e.exampleNo}">
-															<input class="form-control" type="number" name="exampleList[${s.index}].exampleIdx" value="${e.exampleIdx}" readonly="readonly">
+													<tr class="exampleRow">
+														<td>
+															<input class="exampleTitle form-control" type="text" value="${e.exampleTitle}">
 														</td>
-														<td><input class="form-control" type="text" name="exampleList[${s.index}].exampleTitle" value="${e.exampleTitle}"></td>
 														<td>
 															<c:if test="${e.exampleOx == '정답'}">
-																<input class="exampleO form-check-input" type="radio" name="exampleList[${s.index}].exampleOx" value="정답" checked="checked">정답
-																<input class="exampleX form-check-input" type="radio" name="exampleList[${s.index}].exampleOx" value="오답">오답
+																<input type="checkbox" class="exampleO form-check-input" value="정답" checked="checked">&nbsp;정답
 															</c:if>
 															<c:if test="${e.exampleOx == '오답'}">
-																<input class="exampleO form-check-input" type="radio" name="exampleList[${s.index}].exampleOx" value="정답">정답
-																<input class="exampleX form-check-input" type="radio" name="exampleList[${s.index}].exampleOx" value="오답" checked="checked">오답
+																<input type="checkbox" class="exampleO form-check-input" value="정답">&nbsp;정답
 															</c:if>
+														</td>
+														<td style="width: 10%;">
+															<button type="button" class="removeBtn btn btn-secondary">x</button>
 														</td>
 													</tr>
 												</c:forEach>
 											</table>
-											<button type="submit">추가</button>
+											<div class="text-center">
+												<button type="button" id="submitBtn" class="btn btn-primary">등록</button>
+											</div>
 										</form>
 									</div>
 
@@ -93,18 +93,79 @@
 	
 	<script src="${pageContext.request.contextPath}/resources/assets/static/js/app.js"></script>
 
-	
+	<!-- 보기 추가 스크립트 -->
 	<script>
-		$('.exampleO').click(function(){
-			let checkIndex = $('.exampleO').index(this);
-			console.log(checkIndex+'클릭인덱스');
-			$('.exampleX').each(function(index, item){
-				
-				if( index != checkIndex){
-					console.log(index+'오답 인덱스');
-					$(item).attr('checked', true);
+	 	$('#addBtn').on("click", function(){
+			let html = '<tr class="exampleRow">';
+			html += '';
+			html += '<td><input class="exampleTitle form-control" type="text"></td>';
+			html += '<td>';
+			html += '<input type="checkbox" class="exampleO form-check-input" value="정답">&nbsp;정답';
+			html += '</td>';
+			html += '<td><button type="button" class="removeBtn btn btn-secondary">x</button></td>';
+			html += '</tr>';
+			$('#exampleTable').append(html);
+		});
+	</script>
+	
+	<!-- 보기 삭제 스크립트 -->
+	<script>
+		$(document).on('click', '.removeBtn', function() {
+			var idx = $('.removeBtn').index(this);
+			$('.exampleRow').eq(idx).remove();
+			console.log(idx);
+		});
+	</script>
+	
+	<!-- 유효성 검사 스크립트 -->
+	<script>
+		$('#submitBtn').click(function(){
+			let exampleRowCnt = $('#exampleTable tr').length;
+			
+			
+			if($('#questionTitle').val().length == 0){
+				alert('문제를 입력해주세요.');
+				$('#questionTitle').focus();
+				return;
+			}
+			
+			if($('#questionTitle').val().length == 0){
+				alert('문제를 입력해주세요.');
+				$('#questionTitle').focus();
+				return;
+			}
+			
+			$('.exampleTitle').each(function(index, item){
+				if($(this).val().length == 0){
+					alert('보기를 입력해주세요.');
+					$(this).focus();
+					return;
 				}
-			});	
+			});
+			
+			if($('.exampleO:checked').length == 0){
+				alert('정답을 하나 이상 선택해주세요');
+				return;
+			}
+			
+			let exampleRow = 0;
+			$('.exampleTitle').each(function(index, item){
+				let name = 'exampleList['+exampleRow+'].exampleTitle';
+				$($('.exampleTitle')[index]).attr('name', name);
+				exampleRow++;
+			});
+			
+			exampleRow = 0;
+			$('.exampleO').each(function(index, item){
+				let name = 'exampleList['+exampleRow+'].exampleOx';
+				$($('.exampleO')[index]).attr('name', name);
+				exampleRow++;
+			});
+			
+			$('#addForm').serialize();
+			$('#addForm').attr('method', 'POST');
+			$('#addForm').attr('action', '/online-test/teacher/test/modifyQuestion');
+			$('#addForm').submit();
 		});
 	</script>
 

@@ -25,6 +25,7 @@
 <title>로그인 | 학생 | LMS</title>
 </head>
 <body>
+	<input type="hidden" value="${loginMsg}" id="loginMsg">
 
 	<main class="d-flex w-100">
 		<div class="container d-flex flex-column">
@@ -47,10 +48,10 @@
 									</div>
 									<form action="${pageContext.request.contextPath}/loginStudent" method="post" id="form">
 										<div class="mb-3">
-											<input class="form-control form-control-lg" type="text" id="studentId" name="studentId" placeholder="아이디">
+											<input class="form-control form-control-lg" type="text" id="studentId" name="studentId" placeholder="아이디" value="studentOne">
 										</div>
 										<div class="mb-3">
-											<input class="form-control form-control-lg" type="password" id="studentPw" name="studentPw" placeholder="비밀번호">
+											<input class="form-control form-control-lg" type="password" id="studentPw" name="studentPw" placeholder="비밀번호" value="1234">
 										</div>
 										<div class="">
 											<div class="msg">${msg}</div>
@@ -77,7 +78,9 @@
 	
 	
 	<script>
-	
+		if($('#loginMsg').val().length != 0){
+			alert($('#loginMsg').val());
+		}
 		$('#submitBtn').click(function(){
 			if($('#studentId').val()==0){
 				$('.msg').text(' 아이디를 입력해주세요.');

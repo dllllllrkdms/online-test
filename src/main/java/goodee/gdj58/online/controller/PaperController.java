@@ -31,7 +31,6 @@ public class PaperController {
 	@Autowired TestService testService;
 	@Autowired ExampleService exampleService;
 	@Autowired DateCompare dateCompare;
-	
 	// 답안
 	@GetMapping("/student/answer")
 	public String getPaperOne(Model model, @RequestParam(value="testNo", required=true) int testNo) {
@@ -48,29 +47,17 @@ public class PaperController {
 
 		return "student/answer";
 	}
-	
-	// 점수 확인 
-	@GetMapping("/student/score")
-	public String getPaperScore(HttpSession session, Model model, @RequestParam(value="testNo", required=true) int testNo) {
-		Student loginStudent = (Student)session.getAttribute("loginStudent");
 		
-		int score = paperService.getPaperScore(testNo, loginStudent.getStudentNo());
-		log.debug("\u001B[31m"+score+"<-- getPaperScore score");
-		
-		model.addAttribute("score", score);
-		
-		return "test/student/score";
-	}
-	
 	// 답안 입력
 	@GetMapping("/student/test/paper")
 	public String addPaper(Model model, @RequestParam(value="testNo", required=true) int testNo) {
 		
 		Test test = testService.getTestOne(testNo);
 		
+		// 오늘 날짜와 시험일자가 같지 않으면 답안 입력 불가
 		if(dateCompare.todayCompare(test.getTestDate()) != 0) {
 			return "redirect:/student/calendar";
-		}
+		} 
 		
 		List<Question> questionList = questionService.getQuestionList(testNo);
 		List<Example> exampleList = exampleService.getExampleList(testNo);
@@ -84,16 +71,18 @@ public class PaperController {
 		return "test/paper";
 	}
 	@PostMapping("/student/test/paper")
-	public String addPaper(HttpSession session, Paper paper, @RequestParam(value="questionCount", required=true) int questionCount) {
+	public String addPaper(HttpSession session, Model model, Paper paper, @RequestParam(value="testNo", required=true) int testNo) {
 		Student loginStudent = (Student)session.getAttribute("loginStudent");
 		
-		int row = paperService.addPaper(loginStudent.getStudentNo(), paper);
+		int row = paperService.addPaper(loginStudent.getStudentNo(), paper, testNo);
 		log.debug("\u001B[31m"+row+"<-- addPaper row");
-		
-		String returnUrl = "redirect:/student/test/myTestList";
-		if(row != questionCount) { // 문항 수만큼 답
-			returnUrl = "redirect:/student/test/paper";
+	
+		if(row != paper.getPaperList().size()) {
+			model.addAttribute("msg", "시스템 에러. 다시 시도해주세요");
+			return "testCalendar";
 		}
-		return returnUrl;
+		
+		model.addAttribute("msg", "응시하였습니다.");
+		return "calendar";
 	}
 }

@@ -11,28 +11,18 @@
 	</li>
 	<li class="sidebar-item">
 		<a class="sidebar-link" href="${pageContext.request.contextPath}/teacher/test/testList">
-	    	<i class="align-middle" data-feather="user"></i> <span class="align-middle">시험 관리</span>
+	    	<i class="align-middle me-2" data-feather="list"></i><span class="align-middle">시험 관리</span>
 	    </a>
 	</li>
 	<li class="sidebar-item">
 		<a class="sidebar-link" href="${pageContext.request.contextPath}/teacher/test/pastTestList">
-	    	<i class="align-middle" data-feather="user"></i> <span class="align-middle">지난 시험 보기</span>
-	    </a>
-	</li>
-	
-	<li class="sidebar-header">
-		학생
-	</li>
-	
-	<li class="sidebar-item">
-		<a class="sidebar-link" href="${pageContext.request.contextPath}/">
-	    	<i class="align-middle" data-feather="user"></i> <span class="align-middle">성적 확인</span>
+	    	<i class="align-middle me-2" data-feather="list"></i><span class="align-middle">지난 시험 보기</span>
 	    </a>
 	</li>
 	
 	<li class="sidebar-item">
-		<a class="sidebar-link" href="${pageContext.request.contextPath}/">
-	    	<i class="align-middle" data-feather="user"></i> <span class="align-middle">통계</span>
+		<a class="sidebar-link" href="${pageContext.request.contextPath}/teacher/test/avg">
+	    	<i class="align-middle me-2" data-feather="trending-up"></i><span class="align-middle">성적 확인</span>
 	    </a>
 	</li>
 	

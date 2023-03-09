@@ -25,24 +25,7 @@ public class QuestionController {
 	@Autowired QuestionService questionService;
 	@Autowired ExampleService exampleService;
 	
-	// 문제 삭제
-	@GetMapping("/teacher/question/removeQuestion")
-	public String removeQuestion(RedirectAttributes rttr, @RequestParam(value="questionNo", required=true) int questionNo, @RequestParam(value="testNo", required=true) int testNo) {
-		log.debug("\u001B[31m"+questionNo+"<-- removeQuestion questionNo");
-		
-		int row = questionService.removeQuestion(questionNo);
-		log.debug("\u001B[31m"+row+"<-- removeQuestion questionNo");
-		
-		String msg = "삭제를 실패했습니다. 다시 시도해주세요.";
-		if(row == 1) {
-			msg = "삭제되었습니다.";
-		}
-		rttr.addFlashAttribute("msg", msg);
-		return "redirect:/teacher/test/testOne?testNo="+testNo;
-		
-	}
-	
-	// 문제 수정
+	// 문제, 보기 수정
 	@GetMapping("/teacher/test/modifyQuestion")
 	public String modifyQuestion(Model model, @RequestParam(value="questionNo", required=true) int questionNo) {
 		log.debug("\u001B[31m"+questionNo+"<-- modifyQuestion questionNo");
@@ -63,21 +46,17 @@ public class QuestionController {
 		int row = questionService.modifyQuestion(question, example);
 		log.debug("\u001B[31m"+row+"<-- modifyQuestion row");
 		
-		String returnUrl = "redirect:/teacher/test/testOne?testNo="+question.getTestNo();
-		
 		int size = 1+example.getExampleList().size();
 		
 		log.debug("\u001B[31m"+size+"<-- modifyQuestion size");
 		
 		if(row != size) {
-			returnUrl = "question/modifyQuestion";
-			model.addAttribute("msg", "수정 실패했습니다. 다시 시도해주세요.");
-			model.addAttribute("question", question);
+			model.addAttribute("msg", "문제 수정 실패했습니다. 다시 시도해주세요.");
 		}
-		return returnUrl;
+		return "redirect:/teacher/test/modifyTest?testNo="+question.getTestNo();
 	}
 	
-	// 문제 상세보기
+	// 문제, 보기 상세보기
 	@GetMapping("/teacher/question/questionOne")
 	public String getQuestion(Model model, @RequestParam(value="questionNo", required=true) int questionNo) {
 		log.debug("\u001B[31m"+questionNo+"<-- getQuestion questionNo");
@@ -91,13 +70,13 @@ public class QuestionController {
 		return "question/questionOne";
 	}
 	
-	// 문제 추가
+	// 문제, 보기 추가
 	@GetMapping("/teacher/test/addQuestion")
 	public String addQuestion(Model model, @RequestParam(value="testNo", required=true) int testNo) {
 		log.debug("\u001B[31m"+testNo+"<-- addQuestion testNo");
 		
 		Test test = testService.getTestOne(testNo);
-		int questionCount = questionService.getQuestionCount(testNo);
+		int questionCount = questionService.getQuestionCount(testNo); // 번호 매기기
 		
 		model.addAttribute("testNo", testNo);
 		model.addAttribute("test", test);
@@ -112,9 +91,7 @@ public class QuestionController {
 		int row = questionService.addQuestion(question, example);
 		log.debug("\u001B[31m"+row+"<-- addQuestion row");
 		
-		String returnUrl = "redirect:/teacher/test/testOne?testNo="+question.getTestNo();
-		
-		int size = 1+example.getExampleList().size();
+		int size = 1+example.getExampleList().size(); 
 		
 		log.debug("\u001B[31m"+size+"<-- addQuestion size");
 		
@@ -122,6 +99,6 @@ public class QuestionController {
 			model.addAttribute("msg", "문제 등록에 실패했습니다. 다시 시도해주세요.");
 		}
 		
-		return returnUrl;
+		return "redirect:/teacher/test/modifyTest?testNo="+question.getTestNo();
 	}
 }

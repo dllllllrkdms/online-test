@@ -5,13 +5,11 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import goodee.gdj58.online.vo.Page;
 import goodee.gdj58.online.vo.Test;
 
 @Mapper
 public interface TestMapper {
-	
-	Map<String, Object> selectTestCountByStudent(Map<String, Object> paramMap);
-	List<Map<String, Object>> selectTestListByStudent(Map<String, Object> paramMap);
 	
 	Test selectTestOne(int testNo);
 	
@@ -21,6 +19,8 @@ public interface TestMapper {
 	
 	int selectPastTestCount(Map<String, Object> paramMap);
 	int selectTestCount(Map<String, Object> paramMap);
-	List<Test> selectPastTestList(Map<String, Object> paramMap);
-	List<Test> selectTestList(Map<String, Object> paramMap);
+	
+	List<Test> selectAllTestList();
+	List<Test> selectPastTestList(Page page);
+	List<Test> selectTestList(Page page);
 }
