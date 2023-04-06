@@ -154,7 +154,7 @@
 														</c:if>
 														
 													</td>
-													<td><a href="${pageContext.request.contextPath}/${path}/paper?testNo=${t.testNo}">답지</a></td>
+													<td><a href="${pageContext.request.contextPath}/${path}/answer?testNo=${t.testNo}">답지</a></td>
 												</tr>
 											</c:forEach>
 										</tbody>

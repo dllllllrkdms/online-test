@@ -1,6 +1,7 @@
 package goodee.gdj58.online.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -31,13 +32,14 @@ public class PaperController {
 	@Autowired TestService testService;
 	@Autowired ExampleService exampleService;
 	@Autowired DateCompare dateCompare;
+	
 	// 답안
-	@GetMapping("/student/answer")
+	@GetMapping(value={"/student/answer","/teacher/answer"})
 	public String getPaperOne(Model model, @RequestParam(value="testNo", required=true) int testNo) {
 		
 		Test test = testService.getTestOne(testNo);
 		List<Question> questionList = questionService.getQuestionList(testNo);
-		List<Example> exampleList = exampleService.getExampleList(testNo);
+		List<Map<String, Object>> exampleList = exampleService.getAnswer(testNo);
 		int questionCount = questionService.getQuestionCount(testNo);
 		
 		model.addAttribute("questionList", questionList);
@@ -45,7 +47,7 @@ public class PaperController {
 		model.addAttribute("test", test);
 		model.addAttribute("questionCount", questionCount);
 
-		return "student/answer";
+		return "test/answer";
 	}
 		
 	// 답안 입력

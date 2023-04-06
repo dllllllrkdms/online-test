@@ -89,7 +89,6 @@
 		  data: {
 		    labels: xModel,
 		    datasets: [{
-		      backgroundColor: "rgba(0,0,0,1.0)",
 		      borderColor: "rgba(0,0,0,0.1)",
 		      data: yModel
 		    }]

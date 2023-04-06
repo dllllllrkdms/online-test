@@ -36,7 +36,7 @@ public class TestController {
 	@Autowired ExampleService exampleService;
 	@Autowired PaperService paperService;
 	
-	// 상세보기
+	// 시험 응시 페이지
 	@GetMapping(value={"/{path:^teacher$|^student$}/paper"}) // 다중 매핑 
 	public String getAnswer(Model model
 							, @PathVariable String path
@@ -79,7 +79,7 @@ public class TestController {
 		return "redirect:/teacher/test/testList";
 	}
 	
-	// 상세보기
+	// 시험지 상세보기
 	@GetMapping(value={"/{path:^teacher$|^student$}/test/testOne"}) // 다중 매핑 
 	public String getTestOne(Model model,@PathVariable String path, @RequestParam(value="testNo", required=true) int testNo) {
 		log.debug("\u001B[31m"+path+"<-- getTestOne path");
