@@ -11,6 +11,7 @@ import goodee.gdj58.online.vo.TestScore;
 @Mapper
 public interface TestScoreMapper {
 	
+	int selectAvgByStudent(Map<String, Object> map);
 	int selectAvgCount(Map<String, Object> map);
 	List<Map<String, Object>> selectAvgByTest(Page page);
 	int selectTestCountByStudent(Map<String, Object> map);

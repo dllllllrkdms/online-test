@@ -8,14 +8,11 @@
 		FROM (
 			SELECT 
 				test_title testTitle
-				, AVG(score) avg 
-				, COUNT(*) cnt
 			FROM test_score ts
 			INNER JOIN test t 
 			ON ts.test_no = t.test_no
 			WHERE teacher_id = #{teacherId}
 			GROUP BY ts.test_no) t
-		
 	</select>
 	
 	<!-- 강사 등록한 시험 평균 확인 -->
@@ -55,6 +52,16 @@
 		WHERE student_no = #{studentNo}
 		AND test_no = #{testNo}
 	</select>	
+	
+	<!-- 학생 총 시험 평균 점수 -->
+	<select id="selectAvgByStudent" resultType="Integer" parameterType="java.util.Map">
+		SELECT
+			AVG(score) avg
+		FROM test_score 
+		<where>
+			student_no = #{studentNo}
+		</where>
+	</select>
 	
 	<!-- 학생이 응시한 시험과 점수 목록 -->
 	<select id="selectTestScoreList" resultType="java.util.Map" parameterType="goodee.gdj58.online.vo.Page">

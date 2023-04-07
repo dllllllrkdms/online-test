@@ -41,6 +41,14 @@ public class TestScoreService {
 		return testScoreMapper.paperCheckByStudent(ts);
 	}
 	
+	// 학생의 총 평균 점수
+	public int selectAvgByStudent(int studentNo) {
+		Map<String, Object> m = new HashMap<String, Object>();
+		m.put("studentNo", studentNo);
+		
+		return testScoreMapper.selectAvgByStudent(m);
+	}
+	
 	// 학생이 응시한 테스트 목록, 점수 출력
 	public List<Map<String, Object>> getTestScoreList(Page page){
 		return testScoreMapper.selectTestScoreList(page);

@@ -45,12 +45,20 @@
 						<div class="col-md-4 col-xl-3">
 							<div class="card mb-3">
 								<div class="card-header">
-									<h5 class="card-title mb-0">Profile Details</h5>
+									<h5 class="card-title mb-0"></h5>
 								</div>
-								<div class="card-body text-center">
-									<h5 class="card-title mb-0">Christina Mason</h5>
-									<div class="text-muted mb-2">Lead Developer</div>
-
+								<div class="card-body">
+									<table class="table">
+										<tr>
+											<th>시험 수</th>
+											<td>${page.totalCount}</td>
+										</tr>
+										<tr>
+											<th>총 평균 점수</th>
+											<td>${avg}</td>
+										</tr>
+										
+									</table>
 									<div>
 										<a class="btn btn-primary btn-sm" href="#">Follow</a>
 										<a class="btn btn-primary btn-sm" href="#"><span data-feather="message-square"></span> Message</a>

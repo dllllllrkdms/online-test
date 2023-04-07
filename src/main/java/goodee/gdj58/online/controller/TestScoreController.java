@@ -27,7 +27,7 @@ public class TestScoreController {
 	@GetMapping("/teacher/test/avg")
 	public String getTestAvg(HttpSession session) {
 		
-		return "teacher/avgTest";
+		return "test/score/avgTest";
 	}
 	
 	// 학생이 응시한 테스트 목록, 점수 출력
@@ -42,24 +42,29 @@ public class TestScoreController {
 		
 		// 1. 로그인 학생 가져오기
 		Student loginStudent = (Student)session.getAttribute("loginStudent");
+		int studentNo = loginStudent.getStudentNo();
+		log.debug("\u001B[31m"+studentNo+"<--myTestList studentNo");
 		
 		// 2. 페이징
 		int pageSize = 3; 
-		Page page = testScoreService.getTestCountByStudent(currentPage, rowPerPage, pageSize, loginStudent.getStudentNo(), searchWord);
+		Page page = testScoreService.getTestCountByStudent(currentPage, rowPerPage, pageSize, studentNo, searchWord);
 		log.debug("\u001B[31m"+page+"<--myTestList page");
 		model.addAttribute("page", page);
 		
-		// 2-1 카운트가 0이면 목록 출력 x
+		List<Map<String, Object>> testList;
+		int avg = 0;
+		// 3. 목록 출력
+		// 카운트가 0이면 목록 출력 x
 		if(page.getTotalCount() == 0) {
-			model.addAttribute("testList", Collections.EMPTY_LIST); // 빈 list 반환
-			return "student/myTestList";
+			testList = Collections.emptyList();
+		} else {
+			testList = testScoreService.getTestScoreList(page);
+			avg = testScoreService.selectAvgByStudent(studentNo);
+			log.debug("\u001B[31m"+testList+"<--myTestList testList");
+			log.debug("\u001B[31m"+avg+"<--myTestList avg");
 		}
 		
-		// 3. 목록 출력
-		List<Map<String, Object>> testList = testScoreService.getTestScoreList(page);
-		log.debug("\u001B[31m"+testList+"<--pastTestList testList");
-		
-		
+		model.addAttribute("avg", avg);
 		model.addAttribute("testList", testList);
 		
 		return "student/myTestList";
@@ -68,7 +73,7 @@ public class TestScoreController {
 	// 학생이 응시한 테스트 목록, 점수 출력 (페이징없이)
 	@GetMapping("/student/score")
 	public String getScoreList() {
-		return "student/score";
+		return "test/score/score";
 	}
 	
 	
