@@ -112,8 +112,9 @@
 		});
 	</script>
 	
-	<!-- 유효성 검사 스크립트 -->
+	
 	<script>
+		<!-- 유효성 검사 스크립트 -->
 		$('#submitBtn').click(function(){
 			let exampleRowCnt = $('#exampleTable tr').length;
 			
@@ -143,24 +144,71 @@
 				return;
 			}
 			
-			let exampleRow = 0;
+			let row = 0;
 			$('.exampleTitle').each(function(index, item){
-				let name = 'exampleList['+exampleRow+'].exampleTitle';
-				$($('.exampleTitle')[index]).attr('name', name);
-				exampleRow++;
+				let name = 'exampleTitle';
+				$(this).attr('name', name);
+				row++;
 			});
 			
-			exampleRow = 0;
+			let rowAnswer = 0;
 			$('.exampleO').each(function(index, item){
-				let name = 'exampleList['+exampleRow+'].exampleOx';
-				$($('.exampleO')[index]).attr('name', name);
-				exampleRow++;
+				let name = 'exampleOx';
+				$(this).attr('name', name);
+				rowAnswer++;
 			});
 			
-			$('#addForm').serialize();
-			$('#addForm').attr('method', 'POST');
-			$('#addForm').attr('action', '/online-test/teacher/test/addQuestion');
-			$('#addForm').submit();
+			
+			<!--데이터전송-->
+			
+			let paramData = [];
+			$('#exampleTable tr').each(function() {
+				
+				let exampleOx = '오답';
+				if ( $(this).find('input[name="exampleOx"]').is(':checked') ) {
+					exampleOx = '정답';
+				}
+			    	let exampleList = {
+			    		exampleTitle : $(this).find("input[name=exampleTitle]").val()
+				    	, exampleOx	 : exampleOx
+				   	};
+				    	 
+			    	//param 배열에 example 오브젝트를 담는다.
+					paramData.push(exampleList);
+				
+			});	
+			
+			let question = {
+					questionTitle : $('#questionTitle').val()
+					, questionIdx : $('input[name="questionIdx"]').val()
+					, testNo : $('input[name="testNo"]').val()
+			};
+			
+			let questionExample = {
+					question : question
+					, exampleList : paramData
+			}
+				
+			console.log(questionExample);
+			
+			$.ajax({
+				type: 'post'
+				, url: '/online-test/teacher/test/question'
+				, data: JSON.stringify(questionExample)
+				, contentType : 'application/json'
+				, dataType : 'text'
+				, success: function(text) {
+					console.log(text);
+					if(text=="success") {
+						console.log('성공');
+						location.reload();
+					}
+				}
+			 	, error: function(request, error) {
+					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				}
+			});
+		
 		});
 	</script>
 	

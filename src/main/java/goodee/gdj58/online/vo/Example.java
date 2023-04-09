@@ -12,5 +12,4 @@ public class Example {
 	private String exampleTitle;
 	private String exampleOx;
 	
-	private List<Example> exampleList;
 }

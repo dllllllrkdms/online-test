@@ -25,9 +25,8 @@ public class QuestionService {
 	}
 	
 	// 문제 수정 : 삭제 후 입력
-	public int modifyQuestion(Question question, Example example) {
-		List<Example> exampleList = example.getExampleList();
-		log.debug("\u001B[31m"+example+"<-- modifyQuestion example");
+	public int modifyQuestion(Question question, List<Example> exampleList) {
+		
 		
 		// 1. 보기 삭제 
 		int row = exampleService.removeExample(question.getQuestionNo());
@@ -56,9 +55,7 @@ public class QuestionService {
 	}
 	
 	// 문제, 보기 추가
-	public int addQuestion(Question question, Example example) {
-		List<Example> exampleList = example.getExampleList();
-		log.debug("\u001B[31m"+example+"<-- addQuestion example");
+	public int addQuestion(Question question, List<Example> exampleList) {
 		
 		// 1. 문제 추가
 		int row = questionMapper.insertQuestion(question);
